@@ -1,7 +1,7 @@
 # Личный проект «Большое путешествие» [![Build status][travis-image]][travis-url]
 
 * Студент: [Владислав Козловский](https://up.htmlacademy.ru/ecmascript/11/user/881967).
-* Наставник: `Неизвестно`.
+* Наставник: [Сергей Рожков](https://htmlacademy.ru/profile/id1069033).
 
 ---
 
