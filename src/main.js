@@ -1,17 +1,16 @@
 'use strict';
 
-const maxRenderPoint = 3;
-const pageHeaderContainer = document.querySelector(`.page-header`);
-const tripMainContainer = pageHeaderContainer.querySelector(`.trip-main`);
-const tripMainControls = tripMainContainer.querySelector(`.trip-main__trip-controls`);
-const pageMainContainer = document.querySelector(`.page-main`);
-const tripEventsContainer = pageMainContainer.querySelector(`.trip-events`);
+const MAX_RENDER_POINT = 3;
+const pageHeaderElement = document.querySelector(`.page-header`);
+const tripMainElement = pageHeaderElement.querySelector(`.trip-main`);
+const tripMainControlsElement = tripMainElement.querySelector(`.trip-main__trip-controls`);
+const pageMainElement = document.querySelector(`.page-main`);
+const tripEventsElement = pageMainElement.querySelector(`.trip-events`);
 
 const renderTemplateContainer = (container, template, place = `beforeend`) => {
   container.insertAdjacentHTML(place, template);
 };
 
-// Получение информации о маршруте поездки
 const createRouteTripTemplate = () => {
   return (
     `<ul class="trip-days">
@@ -27,7 +26,6 @@ const createRouteTripTemplate = () => {
   );
 };
 
-// Получение информации о поездке
 const createPriceTripTemplate = () => {
   return (
     `<section class="trip-main__trip-info  trip-info">
@@ -44,7 +42,6 @@ const createPriceTripTemplate = () => {
   );
 };
 
-// Создание меню
 const createMenuTripTemplate = () => {
   return (
     `<h2 class="visually-hidden">Switch trip view</h2>
@@ -55,7 +52,6 @@ const createMenuTripTemplate = () => {
   );
 };
 
-// Создание фильтра
 const createFilterTripTemplate = () => {
   return (
     `<h2 class="visually-hidden">Filter events</h2>
@@ -80,7 +76,6 @@ const createFilterTripTemplate = () => {
   );
 };
 
-// Создание Формы сортировки
 const createSortTripTemplate = () => {
   return (
     `<form class="trip-events__trip-sort  trip-sort" action="#" method="get">
@@ -116,7 +111,6 @@ const createSortTripTemplate = () => {
   );
 };
 
-// Создание формы редактирование поездки
 const createEditFormTripTemplate = () => {
   return (
     `<li class="trip-events__item">
@@ -295,7 +289,6 @@ const createEditFormTripTemplate = () => {
   );
 };
 
-// Создание точки маршрута
 const createWayPointTemplate = () => {
   return (
     `<li class="trip-events__item">
@@ -336,15 +329,15 @@ const createWayPointTemplate = () => {
 };
 
 
-renderTemplateContainer(tripMainContainer, createPriceTripTemplate(), `afterbegin`);
-renderTemplateContainer(tripMainControls, createMenuTripTemplate(), `afterbegin`);
-renderTemplateContainer(tripMainControls, createFilterTripTemplate());
-renderTemplateContainer(tripEventsContainer, createSortTripTemplate());
-renderTemplateContainer(tripEventsContainer, createRouteTripTemplate());
+renderTemplateContainer(tripMainElement, createPriceTripTemplate(), `afterbegin`);
+renderTemplateContainer(tripMainControlsElement, createMenuTripTemplate(), `afterbegin`);
+renderTemplateContainer(tripMainControlsElement, createFilterTripTemplate());
+renderTemplateContainer(tripEventsElement, createSortTripTemplate());
+renderTemplateContainer(tripEventsElement, createRouteTripTemplate());
 
-const tripEventsList = tripEventsContainer.querySelector(`.trip-events__list`);
+const tripEventsList = tripEventsElement.querySelector(`.trip-events__list`);
 
-for (let i = 0; i < maxRenderPoint; i++) {
+for (let i = 0; i < MAX_RENDER_POINT; i++) {
   renderTemplateContainer(tripEventsList, createWayPointTemplate());
 }
 
