@@ -335,10 +335,10 @@ renderTemplateContainer(tripMainControlsElement, createFilterTripTemplate());
 renderTemplateContainer(tripEventsElement, createSortTripTemplate());
 renderTemplateContainer(tripEventsElement, createRouteTripTemplate());
 
-const tripEventsList = tripEventsElement.querySelector(`.trip-events__list`);
+const tripEventsListElement = tripEventsElement.querySelector(`.trip-events__list`);
 
 for (let i = 0; i < MAX_RENDER_POINT; i++) {
-  renderTemplateContainer(tripEventsList, createWayPointTemplate());
+  renderTemplateContainer(tripEventsListElement, createWayPointTemplate());
 }
 
-renderTemplateContainer(tripEventsList, createEditFormTripTemplate());
+renderTemplateContainer(tripEventsListElement, createEditFormTripTemplate());
