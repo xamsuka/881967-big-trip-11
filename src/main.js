@@ -9,13 +9,13 @@ const renderTemplateContainer = (container, template, place = `beforeend`) => {
   container.insertAdjacentHTML(place, template);
 };
 
-import {createRouteTripTemplate} from './components/create-route-trip-template';
-import {createPriceTripTemplate} from './components/create-price-trip-template';
-import {createMenuTripTemplate} from './components/create-menu-trip-template';
-import {createFilterTripTemplate} from './components/create-filter-trip-template';
-import {createSortTripTemplate} from './components/create-sort-trip-template';
-import {createEditFormTripTemplate} from './components/create-edit-form-trip-template';
-import {createWayPointTemplate} from './components/create-way-point-template';
+import {createRouteTripTemplate} from './components/route-trip';
+import {createPriceTripTemplate} from './components/price-trip';
+import {createMenuTripTemplate} from './components/menu-trip';
+import {createFilterTripTemplate} from './components/filter-trip';
+import {createSortTripTemplate} from './components/sort-trip';
+import {createEditFormTripTemplate} from './components/edit-form-trip';
+import {createWayPointTemplate} from './components/way-point';
 
 renderTemplateContainer(tripMainElement, createPriceTripTemplate(), `afterbegin`);
 renderTemplateContainer(tripMainControlsElement, createMenuTripTemplate(), `afterbegin`);
