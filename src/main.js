@@ -8,8 +8,7 @@ import {createWayPointTemplate} from './components/way-point';
 import {getRandomNumber, getRandomBooleanValue} from './util';
 import {generateWayPoints} from './mock/way-point';
 
-const WAY_POINT = 20;
-const MAX_RENDER_POINT = 3;
+const WAY_POINT = 10;
 const pageHeaderElement = document.querySelector(`.page-header`);
 const tripMainElement = pageHeaderElement.querySelector(`.trip-main`);
 const tripMainControlsElement = tripMainElement.querySelector(`.trip-main__trip-controls`);

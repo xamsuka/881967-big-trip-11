@@ -53,7 +53,9 @@ const generateInfoWayPoint = () => {
 const generateDate = () => {
   const startDate = new Date();
   const endDate = new Date();
-  endDate.setHours(startDate.getHours() + getRandomNumber(0, 12));
+  startDate.setDate(startDate.getDate() + getRandomNumber(0, 2));
+  endDate.setHours(startDate.getHours() + getRandomNumber(2, 12));
+  endDate.setDate(startDate.getDate() + getRandomNumber(0, 1));
 
   return {
     [`startDate`]: startDate,

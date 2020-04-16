@@ -9,7 +9,7 @@ const createWayOptionsMarkup = (options) => {
       <span class="event__offer-price">${options[key].price}</span>
     </li>
     `);
-  }).join(`\n`);
+  }).join(` `);
 
   return optionsMarkup;
 };
