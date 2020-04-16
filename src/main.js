@@ -4,8 +4,6 @@ import {createMenuTripTemplate} from './components/menu-trip';
 import {createFilterTripTemplate} from './components/filter-trip';
 import {createSortTripTemplate} from './components/sort-trip';
 import {createEditFormTripTemplate} from './components/edit-form-trip';
-import {createWayPointTemplate} from './components/way-point';
-import {getRandomNumber, getRandomBooleanValue} from './util';
 import {generateWayPoints} from './mock/way-point';
 
 const WAY_POINT = 10;
@@ -25,12 +23,7 @@ renderTemplateContainer(tripMainElement, createPriceTripTemplate(), `afterbegin`
 renderTemplateContainer(tripMainControlsElement, createMenuTripTemplate(), `afterbegin`);
 renderTemplateContainer(tripMainControlsElement, createFilterTripTemplate());
 renderTemplateContainer(tripEventsElement, createSortTripTemplate());
-// renderTemplateContainer(tripEventsElement, createRouteTripTemplate());
-
-const tripEventsListElement = tripEventsElement.querySelector(`.trip-events__list`);
-
 renderTemplateContainer(tripEventsElement, createRouteTripTemplate(wayPoints));
 
-// renderTemplateContainer(tripEventsElement, createEditFormTripTemplate());
-
-console.log(wayPoints);
+const tripEventsListElement = tripEventsElement.querySelector(`.trip-events__list`);
+renderTemplateContainer(tripEventsListElement, createEditFormTripTemplate(wayPoints[0]));

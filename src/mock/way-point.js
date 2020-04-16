@@ -1,4 +1,4 @@
-import {getRandomNumber} from '../util';
+import {getRandomNumber, getRandomBooleanValue} from '../util';
 
 const DESTANTION = [`Omsk`, `Moscow`, `Novosibirsk`, `Yekaterinburg`, `Anapa`, `Vladivostok`, `Vladimir`, `Vorkuta`, `Irkutsk`, `Kaluga`, `Kemerovo`, `Lensk`, `Magadan`, `Norilsk`];
 const DESCRIPTION = [
@@ -70,6 +70,7 @@ const generateWayPoint = () => {
     date: generateDate(),
     options: generateWayPointOptions(),
     info: generateInfoWayPoint(),
+    isFavorite: getRandomBooleanValue(),
   };
 };
 

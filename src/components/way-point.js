@@ -57,4 +57,4 @@ const createWayPointTemplate = (wayPoint) => {
   );
 };
 
-export {createWayPointTemplate};
+export {createWayPointTemplate, createWayOptionsMarkup};
