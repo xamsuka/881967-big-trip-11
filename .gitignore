@@ -10,8 +10,6 @@ Thumbs.db
 # Вспомогательные файлы
 *.log*
 node_modules/
-public/moment.js
-public/moment-precise-range.js
 
 # Файлы сборки (допишите самостоятельно)
 public/bundle.js
