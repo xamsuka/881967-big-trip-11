@@ -1,4 +1,4 @@
-import {getRandomNumber, formateDateTime, getdiffTime} from '../util';
+import {getRandomNumber, formateDateTime, getdiffTime} from '../utils/util';
 
 const createWayOptionsMarkup = (options) => {
   const keys = Object.keys(options);

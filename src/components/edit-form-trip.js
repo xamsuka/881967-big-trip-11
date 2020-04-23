@@ -1,5 +1,5 @@
-import {getRandomNumber} from '../util';
-import {moment} from '../util';
+import {getRandomNumber} from '../utils/util';
+import {moment} from '../utils/util';
 
 const getStatusCheck = (option) => {
   return option ? `checked` : ``;

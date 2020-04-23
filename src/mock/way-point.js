@@ -1,4 +1,4 @@
-import {getRandomNumber, getRandomBooleanValue} from '../util';
+import {getRandomNumber, getRandomBooleanValue} from '../utils/util';
 
 const DESTANTION = [`Omsk`, `Moscow`, `Novosibirsk`, `Yekaterinburg`, `Anapa`, `Vladivostok`, `Vladimir`, `Vorkuta`, `Irkutsk`, `Kaluga`, `Kemerovo`, `Lensk`, `Magadan`, `Norilsk`];
 const DESCRIPTION = [

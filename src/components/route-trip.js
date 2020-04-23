@@ -1,5 +1,5 @@
 import {createWayPointTemplate} from './way-point';
-import {moment} from '../util';
+import {moment} from '../utils/util';
 
 const MAX_RENDER_POINT = 3;
 
