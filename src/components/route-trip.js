@@ -1,4 +1,6 @@
 import {createWayPointTemplate} from './way-point';
+import {moment} from '../util';
+
 const MAX_RENDER_POINT = 3;
 
 const createDayRouteMarkup = (dateIndex, wayPoints) => {

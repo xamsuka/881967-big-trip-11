@@ -1,4 +1,5 @@
 import {getRandomNumber} from '../util';
+import {moment} from '../util';
 
 const getStatusCheck = (option) => {
   return option ? `checked` : ``;
