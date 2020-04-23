@@ -15,6 +15,8 @@ export default class AbstractComponent {
 
   getElement() {
     this._element = createElement(this.getTemplate());
+
+    return this._element;
   }
 
   removeElement() {

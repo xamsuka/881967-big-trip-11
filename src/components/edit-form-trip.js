@@ -1,3 +1,4 @@
+import WayPoint from './way-point';
 import {getRandomNumber} from '../utils/util';
 import {moment} from '../utils/util';
 
@@ -5,15 +6,14 @@ const getStatusCheck = (option) => {
   return option ? `checked` : ``;
 };
 
-const createEditFormOptionsMarkup = (options) => {
+const createOptionsMarkup = (options) => {
   const statusCheckLaggage = getStatusCheck(options[`luggage`]);
   const statusCheckComfort = getStatusCheck(options[`comfort`]);
   const statusCheckMeal = getStatusCheck(options[`meal`]);
   const statusCheckSeats = getStatusCheck(options[`seats`]);
   const statusCheckisTrain = getStatusCheck(options[`train`]);
 
-  return (`
-  <div class="event__offer-selector">
+  return (`<div class="event__offer-selector">
   <input class="event__offer-checkbox  visually-hidden" id="event-offer-luggage-1" type="checkbox"
     name="event-offer-luggage" ${statusCheckLaggage}>
   <label class="event__offer-label" for="event-offer-luggage-1">
@@ -60,22 +60,20 @@ const createEditFormOptionsMarkup = (options) => {
     &plus;
     &euro;&nbsp;<span class="event__offer-price">40</span>
   </label>
-</div>
-  `);
+</div>`);
 };
 
 
 const createEditFormTripTemplate = (wayPoint) => {
   const {type, destantion, date, options, isFavorite} = wayPoint;
 
-  const timeStart = moment(date.startDate).format(`DD-MM-YY H:M`);
-  const timeEnd = moment(date.endDate).format(`DD-MM-YY H:M`);
-  const optionsMarkup = createEditFormOptionsMarkup(options);
+  const timeStart = moment(date.startDate).format(`DD-MM-YY HH:MM`);
+  const timeEnd = moment(date.endDate).format(`DD-MM-YY HH:MM`);
+  const optionsMarkup = createOptionsMarkup(options);
   const pricePoint = getRandomNumber(0, 500);
   const statusFavoriteMarkup = isFavorite ? `checked` : ``;
 
-  return (
-    `<li class="trip-events__item">
+  return (`<li class="trip-events__item">
         <form class="event  event--edit" action="#" method="post">
           <header class="event__header">
             <div class="event__type-wrapper">
@@ -204,8 +202,11 @@ const createEditFormTripTemplate = (wayPoint) => {
             </section>
           </section>
         </form>
-      </li>`
-  );
+      </li>`);
 };
 
-export {createEditFormTripTemplate};
+export default class EditFormTrip extends WayPoint {
+  getTemplate() {
+    return createEditFormTripTemplate(this._wayPoint);
+  }
+}

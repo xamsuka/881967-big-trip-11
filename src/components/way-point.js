@@ -1,14 +1,13 @@
 import {getRandomNumber, formateDateTime, getdiffTime} from '../utils/util';
+import AbstractComponent from './abstract-component';
 
 const createWayOptionsMarkup = (options) => {
   const keys = Object.keys(options);
   const optionsMarkup = keys.map((key) => {
-    return (`
-    <li class="event__offer">
+    return (`<li class="event__offer">
       <span class="event__offer-title">${options[key].name}</span>&plus;&euro;&nbsp;
       <span class="event__offer-price">${options[key].price}</span>
-    </li>
-    `);
+    </li>`);
   }).join(` `);
 
   return optionsMarkup;
@@ -23,8 +22,7 @@ const createWayPointTemplate = (wayPoint) => {
   const timeTrip = getdiffTime(date);
   const pricePoint = getRandomNumber(0, 500);
 
-  return (
-    `<li class="trip-events__item">
+  return (`<li class="trip-events__item">
         <div class="event">
           <div class="event__type">
             <img class="event__type-icon" width="42" height="42" src="img/icons/${type.toLowerCase()}.png" alt="Event type icon">
@@ -53,8 +51,15 @@ const createWayPointTemplate = (wayPoint) => {
             <span class="visually-hidden">Open event</span>
           </button>
         </div>
-      </li>`
-  );
+      </li>`);
 };
 
-export {createWayPointTemplate, createWayOptionsMarkup};
+export default class WayPoint extends AbstractComponent {
+  constructor(wayPoint) {
+    super();
+    this._wayPoint = wayPoint;
+  }
+  getTemplate() {
+    return createWayPointTemplate(this._wayPoint);
+  }
+}

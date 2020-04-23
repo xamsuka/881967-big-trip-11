@@ -1,14 +1,14 @@
-import {createWayPointTemplate} from './way-point';
+import AbstractComponent from './abstract-component';
+import WayPointComponent from './way-point';
 import {moment} from '../utils/util';
 
 const MAX_RENDER_POINT = 3;
 
 const createDayRouteMarkup = (dateIndex, wayPoints) => {
-  const createWayPoinMarkup = wayPoints.map((wayPoint) => createWayPointTemplate(wayPoint)).join(``);
+  const createWayPoinMarkup = wayPoints.map((wayPoint) => new WayPointComponent(wayPoint).getTemplate()).join(``);
   const dateRouteTrip = moment(wayPoints[0].date.startDate).format(`YYYY-MM-DD`);
   const mountDay = moment(wayPoints[0].date.startDate).format(`MMM D`);
-  return (`
-  <li class="trip-days__item  day">
+  return (`<li class="trip-days__item  day">
     <div class="day__info">
       <span class="day__counter">${dateIndex}</span>
       <time class="day__date" datetime="${dateRouteTrip}">${mountDay}</time>
@@ -16,8 +16,7 @@ const createDayRouteMarkup = (dateIndex, wayPoints) => {
     <ul class="trip-events__list">
     ${createWayPoinMarkup}
     </ul>
-  </li>
-  `);
+  </li>`);
 };
 
 const createRouteTripTemplate = (wayPoints) => {
@@ -39,4 +38,13 @@ const createRouteTripTemplate = (wayPoints) => {
   );
 };
 
-export {createRouteTripTemplate};
+export default class RouteTrip extends AbstractComponent {
+  constructor(wayPoints) {
+    super();
+    this._wayPoints = wayPoints;
+  }
+
+  getTemplate() {
+    return createRouteTripTemplate(this._wayPoints);
+  }
+}
