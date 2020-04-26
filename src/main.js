@@ -3,8 +3,6 @@ import MenuTripComponent from './components/menu-trip';
 import FilterComponent from './components/filter-trip';
 import SortComponent from './components/sort-trip';
 import RouteTripComponent from './components/route-trip';
-import WayPointComponent from './components/way-point';
-import EditFormTripComponent from './components/edit-form-trip';
 import {generateWayPoints} from './mock/way-point';
 import {renderComponent} from './utils/render';
 
@@ -22,6 +20,3 @@ renderComponent(tripMainControlsElement, new MenuTripComponent());
 renderComponent(tripMainControlsElement, new FilterComponent());
 renderComponent(tripEventsElement, new SortComponent());
 renderComponent(tripEventsElement, new RouteTripComponent(wayPoints));
-
-const tripEventsListElement = tripEventsElement.querySelector(`.trip-events__list`);
-renderComponent(tripEventsListElement, new EditFormTripComponent(wayPoints[0]));
