@@ -1,4 +1,3 @@
-
 import InfoTripComponent from './components/price-trip';
 import MenuTripComponent from './components/menu-trip';
 import FilterComponent from './components/filter-trip';
@@ -10,7 +9,6 @@ import {generateWayPoints} from './mock/way-point';
 import {renderComponent} from './utils/render';
 
 const WAY_POINT = 10;
-
 const pageHeaderElement = document.querySelector(`.page-header`);
 const tripMainElement = pageHeaderElement.querySelector(`.trip-main`);
 const tripMainControlsElement = tripMainElement.querySelector(`.trip-main__trip-controls`);

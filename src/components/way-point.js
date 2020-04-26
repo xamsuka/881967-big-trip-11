@@ -59,6 +59,7 @@ export default class WayPoint extends AbstractComponent {
     super();
     this._wayPoint = wayPoint;
   }
+
   getTemplate() {
     return createWayPointTemplate(this._wayPoint);
   }

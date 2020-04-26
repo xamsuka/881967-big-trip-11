@@ -22,10 +22,10 @@ const renderComponent = (container, component, place = `beforeend`) => {
 };
 
 const replace = (newComponent, oldComponent) => {
-  const parentElement = newComponent.getElement().parentElement;
+  const parentElement = oldComponent.getElement().parentElement;
   const newChild = newComponent.getElement();
   const oldChild = oldComponent.getElement();
-  parentElement.replaceChild(oldChild, newChild);
+  parentElement.replaceChild(newChild, oldChild);
 };
 
 export {createElement, renderComponent, replace};

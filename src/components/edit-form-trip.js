@@ -1,4 +1,4 @@
-import WayPoint from './way-point';
+import WayPointComponent from './way-point';
 import {getRandomNumber} from '../utils/util';
 import {moment} from '../utils/util';
 
@@ -205,7 +205,7 @@ const createEditFormTripTemplate = (wayPoint) => {
       </li>`);
 };
 
-export default class EditFormTrip extends WayPoint {
+export default class EditFormTrip extends WayPointComponent {
   getTemplate() {
     return createEditFormTripTemplate(this._wayPoint);
   }
