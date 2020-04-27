@@ -1,10 +1,10 @@
-import {createRouteTripTemplate} from './components/route-trip';
-import {createPriceTripTemplate} from './components/price-trip';
-import {createMenuTripTemplate} from './components/menu-trip';
-import {createFilterTripTemplate} from './components/filter-trip';
-import {createSortTripTemplate} from './components/sort-trip';
-import {createEditFormTripTemplate} from './components/edit-form-trip';
+import InfoTripComponent from './components/price-trip';
+import MenuTripComponent from './components/menu-trip';
+import FilterComponent from './components/filter-trip';
+import SortComponent from './components/sort-trip';
+import RouteTripComponent from './components/route-trip';
 import {generateWayPoints} from './mock/way-point';
+import {renderComponent} from './utils/render';
 
 const WAY_POINT = 10;
 const pageHeaderElement = document.querySelector(`.page-header`);
@@ -15,15 +15,8 @@ const tripEventsElement = pageMainElement.querySelector(`.trip-events`);
 
 const wayPoints = generateWayPoints(WAY_POINT);
 
-const renderTemplateContainer = (container, template, place = `beforeend`) => {
-  container.insertAdjacentHTML(place, template);
-};
-
-renderTemplateContainer(tripMainElement, createPriceTripTemplate(), `afterbegin`);
-renderTemplateContainer(tripMainControlsElement, createMenuTripTemplate(), `afterbegin`);
-renderTemplateContainer(tripMainControlsElement, createFilterTripTemplate());
-renderTemplateContainer(tripEventsElement, createSortTripTemplate());
-renderTemplateContainer(tripEventsElement, createRouteTripTemplate(wayPoints));
-
-const tripEventsListElement = tripEventsElement.querySelector(`.trip-events__list`);
-renderTemplateContainer(tripEventsListElement, createEditFormTripTemplate(wayPoints[0]));
+renderComponent(tripMainElement, new InfoTripComponent(), `afterbegin`);
+renderComponent(tripMainControlsElement, new MenuTripComponent());
+renderComponent(tripMainControlsElement, new FilterComponent());
+renderComponent(tripEventsElement, new SortComponent());
+renderComponent(tripEventsElement, new RouteTripComponent(wayPoints));

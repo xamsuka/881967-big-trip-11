@@ -1,40 +1,80 @@
-import {createWayPointTemplate} from './way-point';
+import AbstractComponent from './abstract-component';
+import DaysTirpComponent from './days-trip';
+import DayTripComponent from './day-trip';
+import WayPointComponent from './way-point';
+import EditFormTripComponent from '../components/edit-form-trip';
+import {replace} from '../utils/render';
 const MAX_RENDER_POINT = 3;
 
-const createDayRouteMarkup = (dateIndex, wayPoints) => {
-  const createWayPoinMarkup = wayPoints.map((wayPoint) => createWayPointTemplate(wayPoint)).join(``);
-  const dateRouteTrip = moment(wayPoints[0].date.startDate).format(`YYYY-MM-DD`);
-  const mountDay = moment(wayPoints[0].date.startDate).format(`MMM D`);
-  return (`
-  <li class="trip-days__item  day">
-    <div class="day__info">
-      <span class="day__counter">${dateIndex}</span>
-      <time class="day__date" datetime="${dateRouteTrip}">${mountDay}</time>
-    </div>
-    <ul class="trip-events__list">
-    ${createWayPoinMarkup}
-    </ul>
-  </li>
-  `);
+const gettingDaysTrip = (wayPoints) => {
+  const daysTripAll = Array.from(wayPoints.map((wayPoint) => wayPoint.date.startDate.getDate()));
+  const daysTrip = Array.from(new Set(daysTripAll));
+  return daysTrip;
 };
 
-const createRouteTripTemplate = (wayPoints) => {
-  const countDaysTrip = Array.from(new Set(Array.from(wayPoints.map((wayPoint) => wayPoint.date.startDate.getDate()))));
-  let daysRouteMarkup = ``;
+const mountedWayPoint = (wayPointComponent, editFormTripComponent) => {
+  const buttonEdit = wayPointComponent.getElement().querySelector(`.event__rollup-btn`);
+  const buttonSave = editFormTripComponent.getElement().querySelector(`.event__save-btn`);
+
+  buttonEdit.addEventListener(`click`, () => {
+    replace(editFormTripComponent, wayPointComponent);
+  });
+
+  buttonSave.addEventListener(`click`, (evt) => {
+    evt.preventDefault();
+    replace(wayPointComponent, editFormTripComponent);
+  });
+};
+
+const gettingWayPointComponent = (wayPoint) => {
+  const wayPointComponent = new WayPointComponent(wayPoint);
+  const editFormTripElement = new EditFormTripComponent(wayPoint);
+
+  mountedWayPoint(wayPointComponent, editFormTripElement);
+
+  return wayPointComponent;
+};
+
+const createDayRouteElement = (dateIndex, wayPoints) => {
+  const dateDayWayPoints = wayPoints[0].date.startDate;
+  const dayTripElement = new DayTripComponent(dateIndex, dateDayWayPoints).getElement();
+  const tripEventsListElement = dayTripElement.querySelector(`.trip-events__list`);
+
+  wayPoints.forEach((wayPoint) => {
+    const wayPointElement = gettingWayPointComponent(wayPoint).getElement();
+    tripEventsListElement.appendChild(wayPointElement);
+  });
+
+  return dayTripElement;
+};
+
+const createRouteTripElement = (wayPoints) => {
+  const daysTrip = gettingDaysTrip(wayPoints);
+  const daysTripElement = new DaysTirpComponent().getElement();
   let startIndexDay = 1;
 
-  for (const day of countDaysTrip.slice().sort()) {
+  for (const day of daysTrip.slice().sort()) {
     const pointInDay = wayPoints.filter((wayPoint) => wayPoint.date.startDate.getDate() === day);
     const pointRender = pointInDay.slice().slice(0, MAX_RENDER_POINT);
-    daysRouteMarkup += createDayRouteMarkup(startIndexDay, pointRender);
+    const dayRoute = createDayRouteElement(startIndexDay, pointRender);
+    daysTripElement.appendChild(dayRoute);
     startIndexDay++;
   }
 
-  return (
-    `<ul class="trip-days">
-      ${daysRouteMarkup}
-     </ul>`
-  );
+  return daysTripElement;
 };
 
-export {createRouteTripTemplate};
+export default class RouteTrip extends AbstractComponent {
+  constructor(wayPoints) {
+    super();
+    this._wayPoints = wayPoints;
+  }
+
+  getElement() {
+    if (!this._element) {
+      this._element = createRouteTripElement(this._wayPoints);
+    }
+
+    return this._element;
+  }
+}

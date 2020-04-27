@@ -1,6 +1,7 @@
+import AbstractComponent from "./abstract-component";
+
 const createSortTripTemplate = () => {
-  return (
-    `<form class="trip-events__trip-sort  trip-sort" action="#" method="get">
+  return (`<form class="trip-events__trip-sort  trip-sort" action="#" method="get">
       <span class="trip-sort__item  trip-sort__item--day">Day</span>
 
       <div class="trip-sort__item  trip-sort__item--event">
@@ -29,8 +30,11 @@ const createSortTripTemplate = () => {
       </div>
 
       <span class="trip-sort__item  trip-sort__item--offers">Offers</span>
-    </form>`
-  );
+    </form>`);
 };
 
-export {createSortTripTemplate};
+export default class Sort extends AbstractComponent {
+  getTemplate() {
+    return createSortTripTemplate();
+  }
+}

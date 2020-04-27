@@ -1,4 +1,4 @@
-import {getRandomNumber, getRandomBooleanValue} from '../util';
+import {getRandomNumber, getRandomBooleanValue} from '../utils/util';
 
 const DESTANTION = [`Omsk`, `Moscow`, `Novosibirsk`, `Yekaterinburg`, `Anapa`, `Vladivostok`, `Vladimir`, `Vorkuta`, `Irkutsk`, `Kaluga`, `Kemerovo`, `Lensk`, `Magadan`, `Norilsk`];
 const DESCRIPTION = [
@@ -68,6 +68,7 @@ const generateWayPoint = () => {
     type: pointTrip[getRandomNumber(0, pointTrip.length)],
     destantion: DESTANTION[getRandomNumber(0, DESTANTION.length)],
     date: generateDate(),
+    price: getRandomNumber(0, 500),
     options: generateWayPointOptions(),
     info: generateInfoWayPoint(),
     isFavorite: getRandomBooleanValue(),

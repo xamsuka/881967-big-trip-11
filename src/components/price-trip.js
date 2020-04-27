@@ -1,6 +1,7 @@
-const createPriceTripTemplate = () => {
-  return (
-    `<section class="trip-main__trip-info  trip-info">
+import AbstractComponent from './abstract-component';
+
+const createInfoTripTemplate = () => {
+  return (`<section class="trip-main__trip-info  trip-info">
         <div class="trip-info__main">
           <h1 class="trip-info__title">Amsterdam &mdash; Chamonix &mdash; Geneva</h1>
 
@@ -10,9 +11,11 @@ const createPriceTripTemplate = () => {
         <p class="trip-info__cost">
           Total: &euro;&nbsp;<span class="trip-info__cost-value">1230</span>
         </p>
-      </section>`
-  );
+      </section>`);
 };
 
-
-export {createPriceTripTemplate};
+export default class InfoTrip extends AbstractComponent {
+  getTemplate() {
+    return createInfoTripTemplate();
+  }
+}
