@@ -2,6 +2,8 @@ export default class Utils {
   constructor() {
     this.moment = require(`moment`);
     require(`moment-precise-range-plugin`);
+    this._ENTER_KEY = `Enter`;
+    this._ESC_KEY = `Escape`;
   }
 
   getRandomNumber(min = 0, max = 10) {
@@ -21,5 +23,17 @@ export default class Utils {
   getdiffTime(date) {
     const diffTime = this.moment.preciseDiff(date.startDate, date.endDate, true);
     return diffTime;
+  }
+
+  isEscapePress(evt, action) {
+    if (evt.key === this._ESC_KEY) {
+      action();
+    }
+  }
+
+  isEnterPress(evt, action) {
+    if (evt.key === this._ENTER_KEY) {
+      action();
+    }
   }
 }
