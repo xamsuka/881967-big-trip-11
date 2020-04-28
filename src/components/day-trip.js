@@ -1,9 +1,10 @@
 import AbstractComponent from "./abstract-component";
-import {moment} from '../utils/util';
+import UtilsComponent from '../utils/util';
 
 const createDaysTripTemplate = (dateIndex, date) => {
-  const dateRouteTrip = moment(date).format(`YYYY-MM-DD`);
-  const mountDay = moment(date).format(`MMM D`);
+  const utilsComponent = new UtilsComponent();
+  const dateRouteTrip = utilsComponent.moment(date).format(`YYYY-MM-DD`);
+  const mountDay = utilsComponent.moment(date).format(`MMM D`);
   return (`<li class="trip-days__item  day">
   <div class="day__info">
     <span class="day__counter">${dateIndex}</span>

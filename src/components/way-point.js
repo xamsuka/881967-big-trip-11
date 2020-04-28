@@ -1,5 +1,6 @@
-import {getRandomNumber, formateDateTime, getdiffTime} from '../utils/util';
 import AbstractComponent from './abstract-component';
+import UtilsComponent from '../utils/util';
+
 
 const createWayOptionsMarkup = (options) => {
   const keys = Object.keys(options);
@@ -14,13 +15,13 @@ const createWayOptionsMarkup = (options) => {
 };
 
 const createWayPointTemplate = (wayPoint) => {
-  const {type, destantion, date, options} = wayPoint;
+  const {type, destantion, date, price, options} = wayPoint;
+  const utilsComponent = new UtilsComponent();
   const isExists = !!options;
   const optionsMarkup = isExists ? createWayOptionsMarkup(options) : ``;
-  const timeStart = formateDateTime(date.startDate);
-  const timeEnd = formateDateTime(date.endDate);
-  const timeTrip = getdiffTime(date);
-  const pricePoint = getRandomNumber(0, 500);
+  const timeStart = utilsComponent.formateDateTime(date.startDate);
+  const timeEnd = utilsComponent.formateDateTime(date.endDate);
+  const timeTrip = utilsComponent.getdiffTime(date);
 
   return (`<li class="trip-events__item">
         <div class="event">
@@ -39,7 +40,7 @@ const createWayPointTemplate = (wayPoint) => {
           </div>
 
           <p class="event__price">
-            &euro;&nbsp;<span class="event__price-value">${pricePoint}</span>
+            &euro;&nbsp;<span class="event__price-value">${price}</span>
           </p>
 
           <h4 class="visually-hidden">Offers:</h4>

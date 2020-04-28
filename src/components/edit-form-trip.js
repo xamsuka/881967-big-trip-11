@@ -1,6 +1,5 @@
 import WayPointComponent from './way-point';
-import {getRandomNumber} from '../utils/util';
-import {moment} from '../utils/util';
+import UtilsComponent from '../utils/util';
 
 const getStatusCheck = (option) => {
   return option ? `checked` : ``;
@@ -65,12 +64,11 @@ const createOptionsMarkup = (options) => {
 
 
 const createEditFormTripTemplate = (wayPoint) => {
-  const {type, destantion, date, options, isFavorite} = wayPoint;
-
-  const timeStart = moment(date.startDate).format(`DD-MM-YY HH:MM`);
-  const timeEnd = moment(date.endDate).format(`DD-MM-YY HH:MM`);
+  const {type, destantion, date, price, options, isFavorite} = wayPoint;
+  const utilsComponent = new UtilsComponent();
+  const timeStart = utilsComponent.moment(date.startDate).format(`DD-MM-YY HH:MM`);
+  const timeEnd = utilsComponent.moment(date.endDate).format(`DD-MM-YY HH:MM`);
   const optionsMarkup = createOptionsMarkup(options);
-  const pricePoint = getRandomNumber(0, 500);
   const statusFavoriteMarkup = isFavorite ? `checked` : ``;
 
   return (`<li class="trip-events__item">
@@ -173,7 +171,7 @@ const createEditFormTripTemplate = (wayPoint) => {
                 <span class="visually-hidden">Price</span>
                 &euro;
               </label>
-              <input class="event__input  event__input--price" id="event-price-1" type="text" name="event-price" value="${pricePoint}">
+              <input class="event__input  event__input--price" id="event-price-1" type="text" name="event-price" value="${price}">
             </div>
 
             <button class="event__save-btn  btn  btn--blue" type="submit">Save</button>
