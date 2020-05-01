@@ -1,5 +1,5 @@
 import WayPointComponent from './way-point';
-import UtilsComponent from '../utils/util';
+import {moment} from '../utils/util';
 
 const getStatusCheck = (option) => {
   return option ? `checked` : ``;
@@ -65,9 +65,8 @@ const createOptionsMarkup = (options) => {
 
 const createEditFormTripTemplate = (wayPoint) => {
   const {type, destantion, date, price, options, isFavorite} = wayPoint;
-  const utilsComponent = new UtilsComponent();
-  const timeStart = utilsComponent.moment(date.startDate).format(`DD-MM-YY HH:MM`);
-  const timeEnd = utilsComponent.moment(date.endDate).format(`DD-MM-YY HH:MM`);
+  const timeStart = moment(date.startDate).format(`DD-MM-YY HH:MM`);
+  const timeEnd = moment(date.endDate).format(`DD-MM-YY HH:MM`);
   const optionsMarkup = createOptionsMarkup(options);
   const statusFavoriteMarkup = isFavorite ? `checked` : ``;
 

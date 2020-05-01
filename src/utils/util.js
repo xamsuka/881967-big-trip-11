@@ -1,7 +1,8 @@
+export const moment = require(`moment`);
+require(`moment-precise-range-plugin`);
+
 export default class Utils {
   constructor() {
-    this.moment = require(`moment`);
-    require(`moment-precise-range-plugin`);
     this._ENTER_KEY = `Enter`;
     this._ESC_KEY = `Escape`;
   }
@@ -21,7 +22,7 @@ export default class Utils {
   }
 
   getdiffTime(date) {
-    const diffTime = this.moment.preciseDiff(date.startDate, date.endDate, true);
+    const diffTime = moment.preciseDiff(date.startDate, date.endDate, true);
     return diffTime;
   }
 
