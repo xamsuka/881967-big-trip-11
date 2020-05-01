@@ -1,4 +1,4 @@
-import {getRandomNumber, getRandomBooleanValue} from '../utils/util';
+import UtilsComponent from '../utils/util';
 
 const DESTANTION = [`Omsk`, `Moscow`, `Novosibirsk`, `Yekaterinburg`, `Anapa`, `Vladivostok`, `Vladimir`, `Vorkuta`, `Irkutsk`, `Kaluga`, `Kemerovo`, `Lensk`, `Magadan`, `Norilsk`];
 const DESCRIPTION = [
@@ -9,6 +9,7 @@ const DESCRIPTION = [
   `eros vel aliquam faucibus, purus ex euismod diam`,
   `eu luctus nunc ante ut dui. Sed sed nisi sed augue convallis suscipit in sed felis. Aliquam erat volutpat. Nunc fermentum tortor ac porta dapibus. In rutrum ac purus sit amet tempus.`
 ];
+const utilsComponent = new UtilsComponent();
 const stopPoint = [`Check-in`, `Sightseeing`, `Restaurant`];
 const rideVehicle = [`Taxi`, `Bus`, `Train`, `Ship`, `Transport`, `Drive`, `Flight`];
 const pointTrip = [...stopPoint, ...rideVehicle];
@@ -36,7 +37,7 @@ const wayPointOptions = {
 };
 
 const generateWayPointOptions = () => {
-  return Object.keys(wayPointOptions).slice(0, getRandomNumber(0, wayPointOptions.length)).reduce((result, key) => {
+  return Object.keys(wayPointOptions).slice(0, utilsComponent.getRandomNumber(0, wayPointOptions.length)).reduce((result, key) => {
     result[key] = wayPointOptions[key];
 
     return result;
@@ -45,17 +46,17 @@ const generateWayPointOptions = () => {
 
 const generateInfoWayPoint = () => {
   return {
-    description: DESCRIPTION.slice().slice(getRandomNumber(0, DESCRIPTION.length, DESCRIPTION.length)),
-    photo: `http://picsum.photos/248/152?r=${getRandomNumber()}`,
+    description: DESCRIPTION.slice().slice(utilsComponent.getRandomNumber(0, DESCRIPTION.length, DESCRIPTION.length)),
+    photo: `http://picsum.photos/248/152?r=${utilsComponent.getRandomNumber()}`,
   };
 };
 
 const generateDate = () => {
   const startDate = new Date();
   const endDate = new Date();
-  startDate.setDate(startDate.getDate() + getRandomNumber(0, 2));
-  endDate.setHours(startDate.getHours() + getRandomNumber(2, 12));
-  endDate.setDate(startDate.getDate() + getRandomNumber(0, 1));
+  startDate.setDate(startDate.getDate() + utilsComponent.getRandomNumber(0, 2));
+  endDate.setHours(startDate.getHours() + utilsComponent.getRandomNumber(2, 12));
+  endDate.setDate(startDate.getDate() + utilsComponent.getRandomNumber(0, 1));
 
   return {
     [`startDate`]: startDate,
@@ -65,13 +66,13 @@ const generateDate = () => {
 
 const generateWayPoint = () => {
   return {
-    type: pointTrip[getRandomNumber(0, pointTrip.length)],
-    destantion: DESTANTION[getRandomNumber(0, DESTANTION.length)],
+    type: pointTrip[utilsComponent.getRandomNumber(0, pointTrip.length)],
+    destantion: DESTANTION[utilsComponent.getRandomNumber(0, DESTANTION.length)],
     date: generateDate(),
-    price: getRandomNumber(0, 500),
+    price: utilsComponent.getRandomNumber(0, 500),
     options: generateWayPointOptions(),
     info: generateInfoWayPoint(),
-    isFavorite: getRandomBooleanValue(),
+    isFavorite: utilsComponent.getRandomBooleanValue(),
   };
 };
 
