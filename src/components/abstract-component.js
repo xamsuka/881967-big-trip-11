@@ -1,4 +1,4 @@
-import {createElement} from '../utils/render';
+import RenderComponent from '../utils/render';
 
 export default class AbstractComponent {
   constructor() {
@@ -15,7 +15,8 @@ export default class AbstractComponent {
 
   getElement() {
     if (!this._element) {
-      this._element = createElement(this.getTemplate());
+      const renderComponent = new RenderComponent();
+      this._element = renderComponent.createElement(this.getTemplate());
     }
     return this._element;
   }

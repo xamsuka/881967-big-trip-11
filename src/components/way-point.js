@@ -64,4 +64,10 @@ export default class WayPoint extends AbstractComponent {
   getTemplate() {
     return createWayPointTemplate(this._wayPoint);
   }
+
+  setButtonEditClick(handler) {
+    const wayPointElement = this.getElement();
+    const buttonEditElement = wayPointElement.querySelector(`.event__rollup-btn`);
+    buttonEditElement.addEventListener(`click`, handler);
+  }
 }

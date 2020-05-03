@@ -8,6 +8,12 @@ import {replace} from '../utils/render';
 const MAX_RENDER_POINT = 3;
 const utilsComponet = new UtilsComponent();
 
+const gettingDaysTrip = (wayPoints) => {
+  const daysTripAll = Array.from(wayPoints.map((wayPoint) => wayPoint.date.startDate.getDate()));
+  const daysTrip = Array.from(new Set(daysTripAll));
+  return daysTrip;
+};
+
 const closeEditFormTrip = () => {
   const buttonCloseEdit = document.querySelector(`.event__save-btn`);
   buttonCloseEdit.click();
@@ -18,28 +24,13 @@ const onButtonEditClick = (evt) => {
   utilsComponet.isEscapePress(evt, closeEditFormTrip);
 };
 
-const gettingDaysTrip = (wayPoints) => {
-  const daysTripAll = Array.from(wayPoints.map((wayPoint) => wayPoint.date.startDate.getDate()));
-  const daysTrip = Array.from(new Set(daysTripAll));
-  return daysTrip;
-};
-
 const mountedWayPoint = (wayPointComponent, editFormTripComponent) => {
-  const buttonEdit = wayPointComponent.getElement().querySelector(`.event__rollup-btn`);
-  const buttonForm = editFormTripComponent.getElement().querySelector(`.event`);
-
-  buttonEdit.addEventListener(`click`, () => {
-    const buttonSave = document.querySelector(`.event__save-btn`);
-
-    if (buttonSave) {
-      buttonSave.click();
-    }
-
+  wayPointComponent.setButtonEditClick(() => {
     document.addEventListener(`keydown`, onButtonEditClick);
     replace(editFormTripComponent, wayPointComponent);
   });
 
-  buttonForm.addEventListener(`submit`, (evt) => {
+  editFormTripComponent.setButtonSaveClick((evt) => {
     evt.preventDefault();
     replace(wayPointComponent, editFormTripComponent);
   });
