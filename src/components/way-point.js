@@ -1,11 +1,13 @@
 import AbstractComponent from './abstract-component';
 import UtilsComponent from '../utils/util';
 
+const MAX_VISIBLE_OPTIONS = 3;
 
 const createWayOptionsMarkup = (options) => {
   const keys = Object.keys(options);
-  const optionsMarkup = keys.map((key) => {
-    return (`<li class="event__offer">
+  const optionsMarkup = keys.map((key, index) => {
+    const isVisible = ++index > MAX_VISIBLE_OPTIONS ? `none` : ``;
+    return (`<li class="event__offer" style="display: ${isVisible}">
       <span class="event__offer-title">${options[key].name}</span>&plus;&euro;&nbsp;
       <span class="event__offer-price">${options[key].price}</span>
     </li>`);
