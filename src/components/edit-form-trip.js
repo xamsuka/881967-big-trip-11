@@ -206,4 +206,10 @@ export default class EditFormTrip extends WayPointComponent {
   getTemplate() {
     return createEditFormTripTemplate(this._wayPoint);
   }
+
+  setButtonSaveClick(handler) {
+    const editFormElement = this.getElement();
+    const buttonSaveElement = editFormElement.querySelector(`.event`);
+    buttonSaveElement.addEventListener(`submit`, handler);
+  }
 }
