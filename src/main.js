@@ -1,7 +1,6 @@
 import InfoTripComponent from './components/price-trip';
 import MenuTripComponent from './components/menu-trip';
 import FilterComponent from './components/filter-trip';
-import SortComponent from './components/sort-trip';
 import TripControllerComponent from './controller/trip-controller';
 import {generateWayPoints} from './mock/way-point';
 import {renderComponent} from './utils/render';
@@ -18,6 +17,5 @@ const wayPoints = generateWayPoints(WAY_POINT);
 renderComponent(tripMainElement, new InfoTripComponent(), `afterbegin`);
 renderComponent(tripMainControlsElement, new MenuTripComponent());
 renderComponent(tripMainControlsElement, new FilterComponent());
-renderComponent(tripEventsElement, new SortComponent());
 
 tripControllerComponent.render(wayPoints);
