@@ -49,13 +49,19 @@ export default class TripController {
     });
   }
 
-  _gettingWayPoint(wayPoint) {
+  _renderWayPoint(tripEventsListElement, wayPoint) {
     const wayPointComponent = new WayPointComponent(wayPoint);
     const editFormTripElement = new EditFormTripComponent(wayPoint);
 
     this._mountedWayPoint(wayPointComponent, editFormTripElement);
 
-    return wayPointComponent;
+    this._renderComponent.render(tripEventsListElement, wayPointComponent);
+  }
+
+  _renderWayPoints(tripEventsListElement, wayPoints) {
+    wayPoints.forEach((wayPoint) => {
+      this._renderWayPoint(tripEventsListElement, wayPoint);
+    });
   }
 
   _sortedWayPoints(wayPoints, sortType) {
@@ -94,10 +100,9 @@ export default class TripController {
         const dayTripComponent = new DayTripComponent(indexDate, pointRender[0].date.startDate);
         this._renderComponent.render(this._tripDaysComponent.getElement(), dayTripComponent);
 
-        pointRender.forEach((wayPoint) => {
-          const tripEventsListElement = dayTripComponent.getElement().querySelector(`.trip-events__list`);
-          this._renderComponent.render(tripEventsListElement, this._gettingWayPoint(wayPoint));
-        });
+        const tripEventsListElement = dayTripComponent.getElement().querySelector(`.trip-events__list`);
+        this._renderWayPoints(tripEventsListElement, pointRender);
+
 
         indexDate++;
       }
