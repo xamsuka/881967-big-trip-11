@@ -1,7 +1,7 @@
 import InfoTripComponent from './components/price-trip';
 import MenuTripComponent from './components/menu-trip';
 import FilterComponent from './components/filter-trip';
-import TripControllerComponent from './controller/trip-controller';
+import TripControllerComponent from './controller/trip';
 import {generateWayPoints} from './mock/way-point';
 import {renderComponent} from './utils/render';
 
