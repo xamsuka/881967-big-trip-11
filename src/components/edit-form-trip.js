@@ -212,4 +212,8 @@ export default class EditFormTrip extends WayPointComponent {
     const buttonSaveElement = editFormElement.querySelector(`.event`);
     buttonSaveElement.addEventListener(`submit`, handler);
   }
+
+  setButtonFavoriteChange(handler) {
+    this.getElement().querySelector(`.event__favorite-btn`).addEventListener(`click`, handler);
+  }
 }
