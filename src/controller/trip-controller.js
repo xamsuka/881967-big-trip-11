@@ -7,6 +7,8 @@ import EditFormTripComponent from '../components/edit-form-trip';
 import UtilsComponent from '../utils/util';
 import RenderComponent from '../utils/render';
 
+const MAX_RENDER_POINT = 3;
+
 export default class TripController {
   constructor(container) {
     this._container = container;
@@ -75,8 +77,6 @@ export default class TripController {
   }
 
   render(wayPoints) {
-    const MAX_RENDER_POINT = 3;
-
     const isAvailable = Object.keys(wayPoints).length === 0;
 
     if (isAvailable) {
