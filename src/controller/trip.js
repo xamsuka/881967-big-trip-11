@@ -16,15 +16,16 @@ export default class TripController {
     this._container = container;
     this._noPointsComponent = new NoPointsComponent();
     this._sortComponent = new SortComponent();
+    this._tripDaysComponent = new DaysTirpComponent();
     this._renderComponent = new RenderComponent();
-    this._tripDaysComponent = null;
+    // this._tripDaysComponent = null;
   }
 
   _gettingDaysTrip(wayPoints) {
     const daysTripAll = Array.from(wayPoints.map((wayPoint) => wayPoint.date.startDate.getDate()));
     const daysTrip = Array.from(new Set(daysTripAll));
 
-    return daysTrip.sort();
+    return daysTrip.sort((a, b) => a - b);
   }
 
   _renderWayPoints(tripEventsListElement, wayPoints) {
@@ -58,6 +59,16 @@ export default class TripController {
     return sortedWayPoints;
   }
 
+  _renderWayPointsAfterSorting(wayPoints) {
+    const dayTripComponent = new DayTripComponent(false, false);
+    document.querySelector(`.trip-sort__item--day`).textContent = ``;
+    this._renderComponent.render(this._container, this._tripDaysComponent);
+    this._renderComponent.render(this._tripDaysComponent.getElement(), dayTripComponent);
+
+    const tripEventsListElement = dayTripComponent.getElement().querySelector(`.trip-events__list`);
+    this._renderWayPoints(tripEventsListElement, wayPoints);
+  }
+
   render(wayPoints) {
     this._wayPoints = wayPoints;
 
@@ -68,9 +79,10 @@ export default class TripController {
     } else {
       const daysTrip = this._gettingDaysTrip(wayPoints);
       let indexDate = 1;
-      this._tripDaysComponent = new DaysTirpComponent();
+
       this._renderComponent.render(this._container, this._sortComponent);
       this._renderComponent.render(this._container, this._tripDaysComponent);
+      document.querySelector(`.trip-sort__item--day`).textContent = `DAY`;
 
       for (const day of daysTrip) {
         const pointInDay = wayPoints.filter((wayPoint) => wayPoint.date.startDate.getDate() === day);
@@ -88,8 +100,12 @@ export default class TripController {
       this._sortComponent.setSortTypeChangeHandler((sortType) => {
         const sortedWayPoints = this._sortedWayPoints(wayPoints, sortType);
         this._renderComponent.remove(this._tripDaysComponent);
+        if (sortType === `sort-event`) {
+          this.render(sortedWayPoints);
+        } else {
+          this._renderWayPointsAfterSorting(sortedWayPoints);
+        }
 
-        this.render(sortedWayPoints);
       });
 
     }
