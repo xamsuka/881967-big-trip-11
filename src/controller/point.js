@@ -7,11 +7,12 @@ const utilsComponent = new UtilsComponent();
 const renderComponent = new RenderComponent();
 
 export default class PointController {
-  constructor(container) {
+  constructor(container, onDataChange) {
     this._container = container;
     this._wayPointComponent = null;
     this._editFormTripComponent = null;
     this._onButtonEditClick = this._onButtonEditClick.bind(this);
+    this._onDataChange = onDataChange;
   }
 
   _replaceWayPointToEdit() {
@@ -28,6 +29,8 @@ export default class PointController {
   }
 
   render(wayPoint) {
+    const oldEditFormTripComponent = this._editFormTripComponent;
+
     this._wayPointComponent = new WayPointComponent(wayPoint);
     this._editFormTripComponent = new EditFormTripComponent(wayPoint);
 
@@ -41,6 +44,17 @@ export default class PointController {
       this._replaceEditToWayPoint();
     });
 
-    renderComponent.render(this._container, this._wayPointComponent);
+    this._editFormTripComponent.setButtonFavoriteChange(() => {
+      this._onDataChange(this, wayPoint, Object.assign({}, wayPoint, {
+        isFavorite: !wayPoint.isFavorite,
+      }));
+    });
+
+    if (oldEditFormTripComponent) {
+      renderComponent.replace(this._editFormTripComponent, oldEditFormTripComponent);
+    } else {
+      renderComponent.render(this._container, this._wayPointComponent);
+    }
+
   }
 }

@@ -12,13 +12,13 @@ const utilsComponent = new UtilsComponent();
 export default class TripController {
   constructor(container) {
     this._wayPoints = [];
-    this.maxRenderPointInDay = MAX_RENDER_POINT;
+    this._showedWayPointController = [];
     this._container = container;
     this._noPointsComponent = new NoPointsComponent();
     this._sortComponent = new SortComponent();
     this._tripDaysComponent = new DaysTirpComponent();
     this._renderComponent = new RenderComponent();
-    // this._tripDaysComponent = null;
+    this._onDataChange = this._onDataChange.bind(this);
   }
 
   _gettingDaysTrip(wayPoints) {
@@ -28,9 +28,9 @@ export default class TripController {
     return daysTrip.sort((a, b) => a - b);
   }
 
-  _renderWayPoints(tripEventsListElement, wayPoints) {
+  _renderWayPoints(tripEventsListElement, wayPoints, onDataChange) {
     return wayPoints.map((wayPoint) => {
-      const pointController = new PointController(tripEventsListElement);
+      const pointController = new PointController(tripEventsListElement, onDataChange);
       pointController.render(wayPoint);
 
       return pointController;
@@ -66,12 +66,11 @@ export default class TripController {
     this._renderComponent.render(this._tripDaysComponent.getElement(), dayTripComponent);
 
     const tripEventsListElement = dayTripComponent.getElement().querySelector(`.trip-events__list`);
-    this._renderWayPoints(tripEventsListElement, wayPoints);
+    this._renderWayPoints(tripEventsListElement, wayPoints, this._onDataChange);
   }
 
   render(wayPoints) {
     this._wayPoints = wayPoints;
-
     const isAvailable = Object.keys(wayPoints).length === 0;
 
     if (isAvailable) {
@@ -91,8 +90,7 @@ export default class TripController {
         this._renderComponent.render(this._tripDaysComponent.getElement(), dayTripComponent);
 
         const tripEventsListElement = dayTripComponent.getElement().querySelector(`.trip-events__list`);
-        this._renderWayPoints(tripEventsListElement, pointRender);
-
+        this._showedWayPointController = this._renderWayPoints(tripEventsListElement, pointRender, this._onDataChange);
 
         indexDate++;
       }
@@ -105,9 +103,18 @@ export default class TripController {
         } else {
           this._renderWayPointsAfterSorting(sortedWayPoints);
         }
-
       });
-
     }
+  }
+
+  _onDataChange(controller, oldPointData, newPointData) {
+    const index = this._wayPoints.findIndex((it) => it === oldPointData);
+
+    if (index === -1) {
+      return;
+    }
+
+    this._wayPoints[index] = newPointData;
+    controller.render(this._wayPoints[index]);
   }
 }
