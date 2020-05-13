@@ -19,6 +19,7 @@ export default class TripController {
     this._tripDaysComponent = new DaysTirpComponent();
     this._renderComponent = new RenderComponent();
     this._onDataChange = this._onDataChange.bind(this);
+    this._onViewChange = this._onViewChange.bind(this);
   }
 
   _gettingDaysTrip(wayPoints) {
@@ -28,9 +29,9 @@ export default class TripController {
     return daysTrip.sort((a, b) => a - b);
   }
 
-  _renderWayPoints(tripEventsListElement, wayPoints, onDataChange) {
+  _renderWayPoints(tripEventsListElement, wayPoints, onDataChange, onViewChange) {
     return wayPoints.map((wayPoint) => {
-      const pointController = new PointController(tripEventsListElement, onDataChange);
+      const pointController = new PointController(tripEventsListElement, onDataChange, onViewChange);
       pointController.render(wayPoint);
 
       return pointController;
@@ -66,7 +67,13 @@ export default class TripController {
     this._renderComponent.render(this._tripDaysComponent.getElement(), dayTripComponent);
 
     const tripEventsListElement = dayTripComponent.getElement().querySelector(`.trip-events__list`);
-    this._renderWayPoints(tripEventsListElement, wayPoints, this._onDataChange);
+    this._renderWayPoints(tripEventsListElement, wayPoints, this._onDataChange, this._onViewChange);
+  }
+
+  _onViewChange() {
+    this._showedWayPointController.forEach((it) => {
+      it.setDefaultView();
+    });
   }
 
   render(wayPoints) {
@@ -90,7 +97,7 @@ export default class TripController {
         this._renderComponent.render(this._tripDaysComponent.getElement(), dayTripComponent);
 
         const tripEventsListElement = dayTripComponent.getElement().querySelector(`.trip-events__list`);
-        this._showedWayPointController = this._renderWayPoints(tripEventsListElement, pointRender, this._onDataChange);
+        this._showedWayPointController = this._renderWayPoints(tripEventsListElement, pointRender, this._onDataChange, this._onViewChange);
 
         indexDate++;
       }

@@ -63,8 +63,9 @@ const createOptionsMarkup = (options) => {
 };
 
 
-const createEditFormTripTemplate = (wayPoint) => {
-  const {type, destantion, date, price, options, isFavorite} = wayPoint;
+const createEditFormTripTemplate = (wayPoint, replaceableData = {}) => {
+  const {destantion, date, price, options, isFavorite} = wayPoint;
+  const {type} = replaceableData;
   const timeStart = moment(date.startDate).format(`DD/MM/YY HH:MM`);
   const timeEnd = moment(date.endDate).format(`DD/MM/YY HH:MM`);
   const optionsMarkup = createOptionsMarkup(options);
@@ -206,12 +207,15 @@ export default class EditFormTrip extends AbstractSmartComponent {
   constructor(wayPoint) {
     super();
     this._wayPoint = wayPoint;
+    this._eventType = wayPoint.type;
     this._subscribeOnEvents();
     this._setSubmitHandler = null;
   }
 
   getTemplate() {
-    return createEditFormTripTemplate(this._wayPoint);
+    return createEditFormTripTemplate(this._wayPoint, {
+      type: this._eventType,
+    });
   }
 
   setButtonSaveClick(handler) {
@@ -226,8 +230,8 @@ export default class EditFormTrip extends AbstractSmartComponent {
     this.getElement().querySelector(`.event__favorite-btn`).addEventListener(`click`, handler);
   }
 
-  recoveryListeners(handler) {
-    this._setSubmitHandler = handler;
+  recoveryListeners() {
+    this.setButtonSaveClick(this._setSubmitHandler);
     this._subscribeOnEvents();
   }
 
@@ -237,9 +241,11 @@ export default class EditFormTrip extends AbstractSmartComponent {
     element.querySelector(`.event__type-list`)
       .addEventListener(`click`, (evt) => {
         const target = evt.target;
-        if (target.name === `event-type`) {
-          element.querySelector(`.event__type-icon`).src = `img/icons/${target.value}.png`;
-          element.querySelector(`.event__type-output`).textContent = `${target.value}`;
+        console.log(target.textContent);
+        if (target.tagName === `LABEL`) {
+          this._eventType = target.textContent;
+
+          this.rerender();
         }
       });
 
