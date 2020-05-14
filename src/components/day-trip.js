@@ -1,18 +1,25 @@
 import AbstractComponent from "./abstract-component";
 import {moment} from '../utils/util';
 
-const createDaysTripTemplate = (dateIndex = ``, date = ``) => {
-  const dateRouteTrip = moment(date).format(`YYYY-MM-DD`);
-  const mountDay = moment(date).format(`MMM D`);
-  return (`<li class="trip-days__item  day">
-  <div class="day__info">
-    <span class="day__counter">${dateIndex}</span>
-    <time class="day__date" datetime="${dateRouteTrip}">${mountDay}</time>
-  </div>
-  <ul class="trip-events__list">
+const createDaysTripTemplate = (dateIndex, date) => {
+  if (date instanceof Date) {
+    const dateRouteTrip = moment(date).format(`YYYY-MM-DD`);
+    const mountDay = moment(date).format(`MMM D`);
+    return (`<li class="trip-days__item  day">
+    <div class="day__info">
+      <span class="day__counter">${dateIndex}</span>
+      <time class="day__date" datetime="${dateRouteTrip}">${mountDay}</time>
+    </div>
+    <ul class="trip-events__list">
 
-  </ul>
-</li>`);
+    </ul>
+  </li>`);
+  } else {
+    return (`<li class="trip-days__item  day">
+    <div class="day__info"></div>
+    <ul class="trip-events__list"></ul>
+    </li>`);
+  }
 };
 
 export default class DayTrip extends AbstractComponent {

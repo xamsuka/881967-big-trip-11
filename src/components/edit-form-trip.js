@@ -1,4 +1,4 @@
-import WayPointComponent from './way-point';
+import AbstractSmartComponent from './abstract-smart-component';
 import {moment} from '../utils/util';
 
 const getStatusCheck = (option) => {
@@ -63,10 +63,11 @@ const createOptionsMarkup = (options) => {
 };
 
 
-const createEditFormTripTemplate = (wayPoint) => {
-  const {type, destantion, date, price, options, isFavorite} = wayPoint;
-  const timeStart = moment(date.startDate).format(`DD-MM-YY HH:MM`);
-  const timeEnd = moment(date.endDate).format(`DD-MM-YY HH:MM`);
+const createEditFormTripTemplate = (wayPoint, replaceableData = {}) => {
+  const {destantion, date, price, options, isFavorite} = wayPoint;
+  const {type} = replaceableData;
+  const timeStart = moment(date.startDate).format(`DD/MM/YY HH:MM`);
+  const timeEnd = moment(date.endDate).format(`DD/MM/YY HH:MM`);
   const optionsMarkup = createOptionsMarkup(options);
   const statusFavoriteMarkup = isFavorite ? `checked` : ``;
 
@@ -202,14 +203,57 @@ const createEditFormTripTemplate = (wayPoint) => {
       </li>`);
 };
 
-export default class EditFormTrip extends WayPointComponent {
+export default class EditFormTrip extends AbstractSmartComponent {
+  constructor(wayPoint) {
+    super();
+    this._wayPoint = wayPoint;
+    this._eventType = wayPoint.type;
+    this._subscribeOnEvents();
+    this._setSubmitHandler = null;
+  }
+
   getTemplate() {
-    return createEditFormTripTemplate(this._wayPoint);
+    return createEditFormTripTemplate(this._wayPoint, {
+      type: this._eventType,
+    });
   }
 
   setButtonSaveClick(handler) {
     const editFormElement = this.getElement();
     const buttonSaveElement = editFormElement.querySelector(`.event`);
     buttonSaveElement.addEventListener(`submit`, handler);
+
+    this._setSubmitHandler = handler;
+  }
+
+  setButtonFavoriteChange(handler) {
+    this.getElement().querySelector(`.event__favorite-btn`).addEventListener(`click`, handler);
+  }
+
+  recoveryListeners() {
+    this.setButtonSaveClick(this._setSubmitHandler);
+    this._subscribeOnEvents();
+  }
+
+  _subscribeOnEvents() {
+    const element = this.getElement();
+
+    element.querySelector(`.event__type-list`)
+      .addEventListener(`click`, (evt) => {
+        const target = evt.target;
+
+        if (target.tagName === `LABEL`) {
+          this._eventType = target.textContent;
+
+          this.rerender();
+        }
+      });
+
+    element.querySelector(`#event-destination-1`)
+      .addEventListener(`input`, (evt) => {
+        this._wayPoint[`destantion`] = String(evt.target.value);
+
+        this.rerender();
+      });
   }
 }
