@@ -6,7 +6,7 @@ import RenderComponent from '../utils/render';
 const Mode = {
   DEFAULT: `default`,
   EDIT: `edit`,
-}
+};
 
 const utilsComponent = new UtilsComponent();
 const renderComponent = new RenderComponent();

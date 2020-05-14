@@ -241,7 +241,7 @@ export default class EditFormTrip extends AbstractSmartComponent {
     element.querySelector(`.event__type-list`)
       .addEventListener(`click`, (evt) => {
         const target = evt.target;
-        console.log(target.textContent);
+
         if (target.tagName === `LABEL`) {
           this._eventType = target.textContent;
 
