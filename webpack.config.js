@@ -13,9 +13,17 @@ module.exports = {
     path: path.join(__dirname, 'public'),
     filename: 'bundle.js'
   },
+  module: {
+    rules: [
+      {
+        test: /\.css$/i,
+        use: ['style-loader', 'css-loader'],
+      },
+    ],
+  },
   plugins: [
     new MomentLocalesPlugin({
         localesToKeep: ['es-us'],
     }),
-],
+  ],
 };

@@ -1,5 +1,7 @@
 import AbstractSmartComponent from './abstract-smart-component';
 import {moment} from '../utils/util';
+import flatpickr from "flatpickr";
+import "flatpickr/dist/flatpickr.min.css";
 
 const getStatusCheck = (option) => {
   return option ? `checked` : ``;
@@ -210,12 +212,20 @@ export default class EditFormTrip extends AbstractSmartComponent {
     this._eventType = wayPoint.type;
     this._subscribeOnEvents();
     this._setSubmitHandler = null;
+    this._flatpickr = null;
+    this._applyFlatpickr();
   }
 
   getTemplate() {
     return createEditFormTripTemplate(this._wayPoint, {
       type: this._eventType,
     });
+  }
+
+  rerender() {
+    super.rerender();
+
+    this._applyFlatpickr();
   }
 
   setButtonSaveClick(handler) {
@@ -255,5 +265,10 @@ export default class EditFormTrip extends AbstractSmartComponent {
 
         this.rerender();
       });
+  }
+
+  _applyFlatpickr() {
+    const inputDateElement = this.getElement().querySelector(`input[name="event-start-time"]`);
+    flatpickr(inputDateElement);
   }
 }
