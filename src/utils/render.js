@@ -1,16 +1,6 @@
-const InsertPlace = {
-  AFTERBEGIN: `afterbegin`,
-  BEFOREEND: `beforeend`
-};
+import {InsertPlace} from '../const';
 
 export default class Render {
-  constructor() {
-    this.InsertPlace = {
-      AFTERBEGIN: `afterbegin`,
-      BEFOREEND: `beforeend`
-    };
-  }
-
   createElement(markup) {
     const element = document.createElement(`div`);
     element.innerHTML = markup;

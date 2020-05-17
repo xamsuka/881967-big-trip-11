@@ -68,8 +68,8 @@ const createOptionsMarkup = (options) => {
 const createEditFormTripTemplate = (wayPoint, replaceableData = {}) => {
   const {destantion, date, price, options, isFavorite} = wayPoint;
   const {type} = replaceableData;
-  const timeStart = moment(date.startDate).format(`DD/MM/YY HH:MM`);
-  const timeEnd = moment(date.endDate).format(`DD/MM/YY HH:MM`);
+  const timeStart = moment(date.startDate).format(`YYYY/DD/MM HH:MM`);
+  const timeEnd = moment(date.endDate).format(`YYYY/DD/MM HH:MM`);
   const optionsMarkup = createOptionsMarkup(options);
   const statusFavoriteMarkup = isFavorite ? `checked` : ``;
 
@@ -212,7 +212,8 @@ export default class EditFormTrip extends AbstractSmartComponent {
     this._eventType = wayPoint.type;
     this._subscribeOnEvents();
     this._setSubmitHandler = null;
-    this._flatpickr = null;
+    this._flatpickrStartDate = null;
+    this._flatpickrEdndDate = null;
     this._applyFlatpickr();
   }
 
@@ -268,8 +269,20 @@ export default class EditFormTrip extends AbstractSmartComponent {
   }
 
   _applyFlatpickr() {
-    const inputDateElement = this.getElement().querySelector(`input[name="event-start-time"]`);
-    flatpickr(inputDateElement, {
+    if (this._flatpickrStartDate || this._flatpickrEndDate) {
+      this._flatpickrStartDate.destroy();
+      this._flatpickrEndDate.destroy();
+      this._flatpickrStartDate = null;
+      this._flatpickrEndDate = null;
+    }
+    const eventStartDateElement = this.getElement().querySelector(`input[name="event-start-time"]`);
+    const eventEndDateElement = this.getElement().querySelector(`input[name="event-end-time"]`);
+
+    this._flatpickrStartDate = flatpickr(eventStartDateElement, {
+      enableTime: true,
+      dateFormat: `Y/m/d H:i`,
+    });
+    this._flatpickrEndDate = flatpickr(eventEndDateElement, {
       enableTime: true,
       dateFormat: `Y/m/d H:i`,
     });

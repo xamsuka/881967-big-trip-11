@@ -1,4 +1,5 @@
 import AbstractComponent from "./abstract-component";
+import {FiltersType} from '../const';
 
 const createFilterTripTemplate = () => {
   return (`<form class="trip-filters" action="#" method="get">
@@ -22,7 +23,25 @@ const createFilterTripTemplate = () => {
 };
 
 export default class Filter extends AbstractComponent {
+  constructor() {
+    super();
+    this._currentFilterType = FiltersType.EVERYTHING;
+  }
   getTemplate() {
     return createFilterTripTemplate();
+  }
+
+  setSortTypeChangeHandler(handler) {
+    this.getElement()
+      .addEventListener(`click`, (evt) => {
+        if (this._currentFilterType === evt.target.textContent) {
+          return;
+        }
+
+        this._currentFilterType = evt.target.textContent;
+
+        handler(this._currentFilterType);
+      });
+
   }
 }

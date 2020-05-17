@@ -51,6 +51,13 @@ export default class PointController {
     }
   }
 
+
+  destroy() {
+    renderComponent.remove(this._wayPointComponent);
+    renderComponent.remove(this._editFormTripComponent);
+    document.removeEventListener(`keydown`, this._onButtonEditClick);
+  }
+
   setDefaultView() {
     if (this._mode !== Mode.DEFAULT) {
       this._replaceEditToWayPoint();

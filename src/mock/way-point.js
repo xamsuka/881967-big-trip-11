@@ -66,6 +66,7 @@ const generateDate = () => {
 
 const generateWayPoint = () => {
   return {
+    id: utilsComponent.getRandomNumber(0, 1500),
     type: pointTrip[utilsComponent.getRandomNumber(0, pointTrip.length)],
     destantion: DESTANTION[utilsComponent.getRandomNumber(0, DESTANTION.length)],
     date: generateDate(),
