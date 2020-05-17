@@ -269,6 +269,9 @@ export default class EditFormTrip extends AbstractSmartComponent {
 
   _applyFlatpickr() {
     const inputDateElement = this.getElement().querySelector(`input[name="event-start-time"]`);
-    flatpickr(inputDateElement);
+    flatpickr(inputDateElement, {
+      enableTime: true,
+      dateFormat: `Y/m/d H:i`,
+    });
   }
 }
