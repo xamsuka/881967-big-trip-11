@@ -7,14 +7,17 @@ export default class Points {
     this._activeFilter = FiltersType.EVERYTHING;
     this._dataChangeHandlers = [];
     this._filterUtils = new FilterUtils();
+
+    this._filterChangeHandlers = [];
   }
 
   getWayPoints() {
     return this._filterUtils.getWayPointsByFilter(this._wayPoints, this._activeFilter);
   }
 
-  addedWayPoints(wayPoints) {
+  setWayPoints(wayPoints) {
     this._wayPoints = Array.from(wayPoints);
+    this._callHandlers(this._dataChangeHandlers);
   }
 
   updatePoint(id, wayPoint) {
@@ -33,13 +36,14 @@ export default class Points {
 
   setActiveFilter(filterType) {
     this._activeFilter = filterType;
+    this._callHandlers(this._filterChangeHandlers);
   }
 
-  // _setDataChangeHandler(handler) {
-  //   this._dataChangeHandlers.push(handler);
-  // }
+  setFilterChangeHandler(handler) {
+    this._filterChangeHandlers.push(handler);
+  }
 
-  // _callHandlers() {
-  //   this._dataChangeHandlers.forEach((handler) => handler());
-  // }
+  _callHandlers(handlers) {
+    handlers.forEach((handler) => handler());
+  }
 }

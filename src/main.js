@@ -20,9 +20,8 @@ const pageMainElement = document.querySelector(`.page-main`);
 const tripEventsElement = pageMainElement.querySelector(`.trip-events`);
 
 
-pointsModel.addedWayPoints(wayPoints);
+pointsModel.setWayPoints(wayPoints);
 const tripControllerComponent = new TripControllerComponent(tripEventsElement, pointsModel);
-
 
 renderComponent.render(tripMainElement, new InfoTripComponent(), `afterbegin`);
 renderComponent.render(tripMainControlsElement, new MenuTripComponent());

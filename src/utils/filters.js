@@ -3,7 +3,7 @@ import {FiltersType} from '../const';
 export default class Filters {
   getWayPointsByFilter(wayPoints, fiterType) {
     let filterWayPoint = [];
-    switch (fiterType) {
+    switch (fiterType.toLowerCase()) {
       case FiltersType.EVERYTHING:
         filterWayPoint = wayPoints;
         break;

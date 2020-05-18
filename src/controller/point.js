@@ -51,7 +51,6 @@ export default class PointController {
     }
   }
 
-
   destroy() {
     renderComponent.remove(this._wayPointComponent);
     renderComponent.remove(this._editFormTripComponent);

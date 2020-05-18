@@ -23,6 +23,7 @@ export default class TripController {
     this._onDataChange = this._onDataChange.bind(this);
     this._onViewChange = this._onViewChange.bind(this);
     this._onFilterChange = this._onFilterChange.bind(this);
+    this._wayPointsModel.setFilterChangeHandler(this._onFilterChange);
   }
 
   render() {
@@ -42,6 +43,7 @@ export default class TripController {
       for (const day of daysTrip) {
         const pointInDay = wayPoints.filter((wayPoint) => wayPoint.date.startDate.getDate() === day);
         const pointRender = pointInDay.slice().slice(0, MAX_RENDER_POINT);
+
         const dayTripComponent = new DayTripComponent(indexDate, pointRender[0].date.startDate);
         this._renderComponent.render(this._tripDaysComponent.getElement(), dayTripComponent);
 
@@ -126,11 +128,12 @@ export default class TripController {
 
   _updateWayPoints() {
     this._removeWayPoints();
-    this._renderWayPoints(this._container, this._wayPointsModel.getWayPoints, this._onDataChange, this._onViewChange);
+    this.render();
+    // this._renderWayPoints(this._container, this._wayPointsModel.getWayPoints(), this._onDataChange, this._onViewChange);
   }
 
   _onFilterChange() {
-    this._updateTasks();
+    this._updateWayPoints();
   }
 
   _onDataChange(controller, oldPointData, newPointData) {
