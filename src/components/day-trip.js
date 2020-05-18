@@ -1,4 +1,4 @@
-import AbstractComponent from "./abstract-component";
+import AbstractComponent from './abstract-component';
 import {moment} from '../utils/util';
 
 const createDaysTripTemplate = (dateIndex, date) => {

@@ -1,6 +1,5 @@
 import RenderComponent from '../utils/render';
 import FilterTripComponent from '../components/filter-trip';
-import {FiltersType} from '../const';
 
 export default class FilterController {
   constructor(container, wayPointModel) {
@@ -15,7 +14,7 @@ export default class FilterController {
     const filterTripComponent = new FilterTripComponent();
     this._renderComponent.render(this._container, filterTripComponent);
 
-    filterTripComponent.setSortTypeChangeHandler(this._onFilterChange);
+    filterTripComponent.setFilterTypeChangeHandler(this._onFilterChange);
   }
 
   _onFilterChange(filterType) {

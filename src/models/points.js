@@ -5,9 +5,7 @@ export default class Points {
   constructor() {
     this._wayPoints = [];
     this._activeFilter = FiltersType.EVERYTHING;
-    this._dataChangeHandlers = [];
     this._filterUtils = new FilterUtils();
-
     this._filterChangeHandlers = [];
   }
 
@@ -17,7 +15,6 @@ export default class Points {
 
   setWayPoints(wayPoints) {
     this._wayPoints = Array.from(wayPoints);
-    this._callHandlers(this._dataChangeHandlers);
   }
 
   updatePoint(id, wayPoint) {
@@ -29,7 +26,7 @@ export default class Points {
 
     this._wayPoints = [].concat(this._wayPoints.slice(0, index), wayPoint, this._wayPoints.slice(index + 1));
 
-    this._callHandlers(this._dataChangeHandlers);
+    this._callHandlers(this._filterChangeHandlers);
 
     return true;
   }

@@ -6,13 +6,13 @@ import UtilsComponent from '../utils/util';
 import RenderComponent from '../utils/render';
 import PointController from './point';
 
-const MAX_RENDER_POINT = 3;
 const utilsComponent = new UtilsComponent();
 
 export default class TripController {
   constructor(container, wayPointsModel) {
     this._wayPointsModel = wayPointsModel;
     this._showedWayPointControllers = [];
+    this._dayTripComponents = [];
     this._container = container;
     this._noPointsComponent = new NoPointsComponent();
     this._sortComponent = new SortComponent();
@@ -33,6 +33,9 @@ export default class TripController {
     if (isAvailable) {
       this._renderComponent.render(this._container, this._noPointsComponent);
     } else {
+      if (this._noPointsComponent) {
+        this._renderComponent.remove(this._noPointsComponent);
+      }
       const daysTrip = this._gettingDaysTrip(wayPoints);
       let indexDate = 1;
 
@@ -42,13 +45,12 @@ export default class TripController {
 
       for (const day of daysTrip) {
         const pointInDay = wayPoints.filter((wayPoint) => wayPoint.date.startDate.getDate() === day);
-        const pointRender = pointInDay.slice().slice(0, MAX_RENDER_POINT);
-
-        const dayTripComponent = new DayTripComponent(indexDate, pointRender[0].date.startDate);
-        this._renderComponent.render(this._tripDaysComponent.getElement(), dayTripComponent);
-
+        const dayTripComponent = new DayTripComponent(indexDate, pointInDay[0].date.startDate);
         const tripEventsListElement = dayTripComponent.getElement().querySelector(`.trip-events__list`);
-        this._showedWayPointControllers = this._showedWayPointControllers.concat(this._renderWayPoints(tripEventsListElement, pointRender, this._onDataChange, this._onViewChange));
+
+        this._dayTripComponents.push(dayTripComponent);
+        this._renderComponent.render(this._tripDaysComponent.getElement(), dayTripComponent);
+        this._showedWayPointControllers = this._showedWayPointControllers.concat(this._renderWayPoints(tripEventsListElement, pointInDay, this._onDataChange, this._onViewChange));
 
         indexDate++;
       }
@@ -126,10 +128,16 @@ export default class TripController {
     this._showedWayPointControllers = [];
   }
 
+  _removeDayComponents(dayComponents) {
+    dayComponents.forEach((dayComponent) => {
+      this._renderComponent.remove(dayComponent);
+    });
+  }
+
   _updateWayPoints() {
+    this._removeDayComponents(this._dayTripComponents);
     this._removeWayPoints();
     this.render();
-    // this._renderWayPoints(this._container, this._wayPointsModel.getWayPoints(), this._onDataChange, this._onViewChange);
   }
 
   _onFilterChange() {

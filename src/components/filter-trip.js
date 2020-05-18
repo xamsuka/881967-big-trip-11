@@ -31,9 +31,13 @@ export default class Filter extends AbstractComponent {
     return createFilterTripTemplate();
   }
 
-  setSortTypeChangeHandler(handler) {
+  setFilterTypeChangeHandler(handler) {
     this.getElement()
       .addEventListener(`click`, (evt) => {
+        if (evt.target.tagName !== `LABEL`) {
+          return;
+        }
+
         if (this._currentFilterType === evt.target.textContent) {
           return;
         }
@@ -42,6 +46,5 @@ export default class Filter extends AbstractComponent {
 
         handler(this._currentFilterType);
       });
-
   }
 }
