@@ -34,7 +34,12 @@ export default class PointController {
 
     this._editFormTripComponent.setButtonSaveClick((evt) => {
       evt.preventDefault();
-      this._replaceEditToWayPoint();
+      this._editFormTripComponent.getDataEditForm();
+      // this._replaceEditToWayPoint();
+    });
+
+    this._editFormTripComponent.setButtonDeleteClick(() => {
+      this._onDataChange(this, wayPoint, null);
     });
 
     this._editFormTripComponent.setButtonFavoriteChange(() => {
