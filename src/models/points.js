@@ -26,8 +26,6 @@ export default class Points {
 
     this._wayPoints = [].concat(this._wayPoints.slice(0, index), wayPoint, this._wayPoints.slice(index + 1));
 
-    this._callHandlers(this._filterChangeHandlers);
-
     return true;
   }
 

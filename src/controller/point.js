@@ -24,7 +24,6 @@ export default class PointController {
 
   render(wayPoint) {
     const oldEditFormTripComponent = this._editFormTripComponent;
-
     this._wayPointComponent = new WayPointComponent(wayPoint);
     this._editFormTripComponent = new EditFormTripComponent(wayPoint);
 
