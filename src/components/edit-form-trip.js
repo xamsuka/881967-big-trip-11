@@ -64,7 +64,6 @@ const createOptionsMarkup = (options) => {
 </div>`);
 };
 
-
 const createEditFormTripTemplate = (wayPoint, replaceableData = {}) => {
   const {destantion, date, price, options, isFavorite} = wayPoint;
   const {type} = replaceableData;
@@ -231,7 +230,7 @@ export default class EditFormTrip extends AbstractSmartComponent {
   }
 
   setButtonSaveClick(handler) {
-    this.getElement().querySelector(`.event`)
+    this.getElement().querySelector(`.event--edit`)
       .addEventListener(`submit`, handler);
 
     this._setSubmitHandler = handler;
@@ -245,7 +244,7 @@ export default class EditFormTrip extends AbstractSmartComponent {
   }
 
   setButtonFavoriteChange(handler) {
-    this.getElement().querySelector(`.event__favorite-btn`).addEventListener(`click`, handler);
+    this.getElement().querySelector(`.event__favorite-icon`).addEventListener(`click`, handler);
   }
 
   recoveryListeners() {
@@ -257,19 +256,23 @@ export default class EditFormTrip extends AbstractSmartComponent {
   getDataEditForm() {
     const form = this.getElement().querySelector(`.event--edit`);
     const formData = new FormData(form);
-    console.log(this._parseFormEditData(formData));
+
+    return this._parseFormEditData(formData);
   }
 
   _parseFormEditData(formData) {
     const dataFavorite = formData.get(`event-favorite`) === `on` ? true : false;
     return {
-      type: formData.get(`event-type`),
+      id: 2,
+      type: this._eventType,
       destantion: formData.get(`event-destination`),
       date: {
         startDate: new Date(formData.get(`event-start-time`)),
         endDate: new Date(formData.get(`event-end-time`)),
       },
       price: formData.get(`event-price`),
+      options: {},
+      info: {},
       isFavorite: dataFavorite,
     };
   }
@@ -281,9 +284,7 @@ export default class EditFormTrip extends AbstractSmartComponent {
       .addEventListener(`click`, (evt) => {
         const target = evt.target;
         const input = target.htmlFor;
-        console.log(evt);
-        debugger;
-        if (target.classList.contains(`event__type-input`)) {
+        if (target.nodeName === `LABEL`) {
           this._eventType = target.textContent;
 
           this.rerender();

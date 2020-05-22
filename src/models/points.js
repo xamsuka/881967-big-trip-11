@@ -19,7 +19,7 @@ export default class Points {
 
   updatePoint(id, wayPoint) {
     const index = this._wayPoints.findIndex((it) => it.id === id);
-
+debugger;
     if (index === -1) {
       return false;
     }

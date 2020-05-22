@@ -7,7 +7,7 @@ import PointsModel from './models/points';
 import {generateWayPoints} from './mock/way-point';
 
 
-const WAY_POINT = 10;
+const WAY_POINT = 2;
 const wayPoints = generateWayPoints(WAY_POINT);
 
 const renderComponent = new RenderComponent();

@@ -150,6 +150,7 @@ export default class TripController {
   }
 
   _onDataChange(controller, oldPointData, newPointData) {
+    debugger;
     const isSuccess = this._wayPointsModel.updatePoint(oldPointData.id, newPointData);
 
     if (isSuccess) {
