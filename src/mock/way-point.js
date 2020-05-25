@@ -45,10 +45,7 @@ const generateWayPointOptions = () => {
 };
 
 const generateInfoWayPoint = () => {
-  return {
-    description: DESCRIPTION.slice().slice(utilsComponent.getRandomNumber(0, DESCRIPTION.length, DESCRIPTION.length)),
-    photo: `http://picsum.photos/248/152?r=${utilsComponent.getRandomNumber()}`,
-  };
+  return [`http://picsum.photos/248/152?r=${utilsComponent.getRandomNumber()}`];
 };
 
 const generateDate = () => {
@@ -72,7 +69,10 @@ const generateWayPoint = () => {
     date: generateDate(),
     price: utilsComponent.getRandomNumber(0, 500),
     options: generateWayPointOptions(),
-    info: generateInfoWayPoint(),
+    info: {
+      description: DESCRIPTION.slice().slice(utilsComponent.getRandomNumber(0, DESCRIPTION.length, DESCRIPTION.length)),
+      photos: generateInfoWayPoint(),
+    },
     isFavorite: utilsComponent.getRandomBooleanValue(),
   };
 };

@@ -1,11 +1,12 @@
 import InfoTripComponent from './components/price-trip';
 import MenuTripComponent from './components/menu-trip';
+import ButtonAddComponent from './components/button-add';
 import FilterController from './controller/filter';
 import TripControllerComponent from './controller/trip';
 import RenderComponent from './utils/render';
 import PointsModel from './models/points';
 import {generateWayPoints} from './mock/way-point';
-
+import {Mode as WayPointControllerMode} from './controller/trip';
 
 const WAY_POINT = 2;
 const wayPoints = generateWayPoints(WAY_POINT);
@@ -28,5 +29,12 @@ renderComponent.render(tripMainControlsElement, new MenuTripComponent());
 const filterController = new FilterController(tripMainControlsElement, pointsModel);
 filterController.render();
 
+const buttonAdd = new ButtonAddComponent();
+renderComponent.render(tripMainElement, buttonAdd);
+
+buttonAdd.setButtonAddClick(() => {
+  tripControllerComponent.createWayPoint();
+  buttonAdd.disabledButton();
+});
 
 tripControllerComponent.render();

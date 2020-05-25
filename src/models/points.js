@@ -19,12 +19,28 @@ export default class Points {
 
   updatePoint(id, wayPoint) {
     const index = this._wayPoints.findIndex((it) => it.id === id);
-debugger;
+
     if (index === -1) {
       return false;
     }
 
     this._wayPoints = [].concat(this._wayPoints.slice(0, index), wayPoint, this._wayPoints.slice(index + 1));
+
+    return true;
+  }
+
+  addPoint(wayPoint) {
+    this._wayPoints = [].concat(wayPoint, this._wayPoints);
+  }
+
+  removePoint(id) {
+    const index = this._wayPoints.findIndex((it) => it.id === id);
+
+    if (index === -1) {
+      return false;
+    }
+
+    this._wayPoints = [].concat(this._wayPoints.slice(0, index), this._wayPoints.slice(index + 1));
 
     return true;
   }

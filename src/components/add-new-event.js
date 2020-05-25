@@ -1,7 +1,6 @@
 import AbstractSmartComponent from './abstract-smart-component';
 import flatpickr from "flatpickr";
 import {moment} from '../utils/util';
-import {Mode as WayPointControllerMode} from '../controller/point';
 import "flatpickr/dist/flatpickr.min.css";
 
 const getStatusCheck = (option) => {
@@ -65,15 +64,34 @@ const createOptionsMarkup = (options) => {
 </div>`);
 };
 
-const createEditFormTripTemplate = (wayPoint, replaceableData = {}) => {
-  const {destantion, date, price, options, isFavorite} = wayPoint;
+const createDetailsMarkup = (wayPoint) => {
+  if (wayPoint.info.photos && wayPoint.info.description) {
+    const photoElements = wayPoint.info.photos.map((photo) => (`<img class="event__photo" src="${photo}" alt="Event photo">`)).join(` `);
+    return (`<section class="event__section  event__section--destination">
+    <h3 class="event__section-title  event__section-title--destination">Destination</h3>
+    <p class="event__destination-description">${wayPoint.info.description}</p>
+
+    <div class="event__photos-container">
+      <div class="event__photos-tape">
+        ${photoElements};
+      </div>
+    </div>
+  </section>`);
+  } else {
+    return ``;
+  }
+
+};
+
+const createAddNewEventFormTemplate = (wayPoint, replaceableData = {}) => {
+  const {destantion, date, price, options} = wayPoint;
   const {type} = replaceableData;
   const timeStart = moment(date.startDate).format(`YYYY/DD/MM HH:MM`);
   const timeEnd = moment(date.endDate).format(`YYYY/DD/MM HH:MM`);
   const optionsMarkup = createOptionsMarkup(options);
-  const statusFavoriteMarkup = isFavorite ? `checked` : ``;
+  const infoMarkup = createDetailsMarkup(wayPoint);
 
-  return (`<form class="event  event--edit" action="#" method="post">
+  return (`<form class="trip-events__item  event  event--edit" action="#" method="post">
           <header class="event__header">
             <div class="event__type-wrapper">
               <label class="event__type  event__type-btn" for="event-type-toggle-1">
@@ -176,19 +194,7 @@ const createEditFormTripTemplate = (wayPoint, replaceableData = {}) => {
             </div>
 
             <button class="event__save-btn  btn  btn--blue" type="submit">Save</button>
-            <button class="event__reset-btn" type="reset">Delete</button>
-
-            <input id="event-favorite-1" class="event__favorite-checkbox  visually-hidden" type="checkbox" name="event-favorite" ${statusFavoriteMarkup}>
-            <label class="event__favorite-btn" for="event-favorite-1">
-              <span class="visually-hidden">Add to favorite</span>
-              <svg class="event__favorite-icon" width="28" height="28" viewBox="0 0 28 28">
-                <path d="M14 21l-8.22899 4.3262 1.57159-9.1631L.685209 9.67376 9.8855 8.33688 14 0l4.1145 8.33688 9.2003 1.33688-6.6574 6.48934 1.5716 9.1631L14 21z"/>
-              </svg>
-            </label>
-
-            <button class="event__rollup-btn" type="button">
-              <span class="visually-hidden">Open event</span>
-            </button>
+            <button class="event__reset-btn" type="reset">Cancel</button>
           </header>
 
           <section class="event__details">
@@ -199,18 +205,18 @@ const createEditFormTripTemplate = (wayPoint, replaceableData = {}) => {
                ${optionsMarkup}
               </div>
             </section>
+            ${infoMarkup}
           </section>
         </form>`);
 };
 
-export default class EditFormTrip extends AbstractSmartComponent {
+export default class AddNewEvent extends AbstractSmartComponent {
   constructor(wayPoint) {
     super();
     this._wayPoint = wayPoint;
-    this._mode = WayPointControllerMode.EDIT;
     this._eventType = wayPoint.type;
     this._setSubmitHandler = null;
-    this._setDeleteHandler = null;
+    this._setCancelHandler = null;
     this._flatpickrStartDate = null;
     this._flatpickrEdndDate = null;
     this._applyFlatpickr();
@@ -218,9 +224,9 @@ export default class EditFormTrip extends AbstractSmartComponent {
   }
 
   getTemplate() {
-    return createEditFormTripTemplate(this._wayPoint, {
+    return createAddNewEventFormTemplate(this._wayPoint, {
       type: this._eventType,
-    }, this._mode);
+    });
   }
 
   rerender() {
@@ -235,11 +241,11 @@ export default class EditFormTrip extends AbstractSmartComponent {
     this._setSubmitHandler = handler;
   }
 
-  setButtonDeleteClick(handler) {
+  setButtonCancelClick(handler) {
     this.getElement().querySelector(`.event__reset-btn`)
     .addEventListener(`click`, handler);
 
-    this._setDeleteHandler = handler;
+    this._setCancelHandler = handler;
   }
 
   setButtonFavoriteChange(handler) {
@@ -248,7 +254,7 @@ export default class EditFormTrip extends AbstractSmartComponent {
 
   recoveryListeners() {
     this.setButtonSaveClick(this._setSubmitHandler);
-    this.setButtonDeleteClick(this._setDeleteHandler);
+    this.setButtonCancelClick(this._setCancelHandler);
     this._subscribeOnEvents();
   }
 
