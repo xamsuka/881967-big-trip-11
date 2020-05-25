@@ -1,16 +1,6 @@
-const InsertPlace = {
-  AFTERBEGIN: `afterbegin`,
-  BEFOREEND: `beforeend`
-};
+import {InsertPlace} from '../const';
 
 export default class Render {
-  constructor() {
-    this.InsertPlace = {
-      AFTERBEGIN: `afterbegin`,
-      BEFOREEND: `beforeend`
-    };
-  }
-
   createElement(markup) {
     const element = document.createElement(`div`);
     element.innerHTML = markup;
@@ -25,6 +15,13 @@ export default class Render {
 
       case InsertPlace.BEFOREEND:
         container.append(component.getElement());
+        break;
+
+      case InsertPlace.BEFORE:
+        container.before(component.getElement());
+        break;
+      case InsertPlace.AFTER:
+        container.after(component.getElement());
         break;
     }
   }

@@ -4,33 +4,43 @@ import DaysTirpComponent from '../components/trip-days';
 import DayTripComponent from '../components/day-trip';
 import UtilsComponent from '../utils/util';
 import RenderComponent from '../utils/render';
-import PointController from './point';
+import PointController, {Mode as WayPointControllerMode, EmptyWayPoint} from './point';
 
-const MAX_RENDER_POINT = 3;
 const utilsComponent = new UtilsComponent();
 
 export default class TripController {
-  constructor(container) {
-    this._wayPoints = [];
-    this._showedWayPointController = [];
+  constructor(container, wayPointsModel) {
+    this._wayPointsModel = wayPointsModel;
+    this._showedWayPointControllers = [];
+    this._dayTripComponents = [];
     this._container = container;
     this._noPointsComponent = new NoPointsComponent();
     this._sortComponent = new SortComponent();
     this._tripDaysComponent = new DaysTirpComponent();
     this._renderComponent = new RenderComponent();
+
+    this._onSortTypeChange = this._onSortTypeChange.bind(this);
     this._onDataChange = this._onDataChange.bind(this);
     this._onViewChange = this._onViewChange.bind(this);
+    this._onFilterChange = this._onFilterChange.bind(this);
+    this._wayPointsModel.setFilterChangeHandler(this._onFilterChange);
+
+    this._creatingWayPoint = null;
   }
 
-  render(wayPoints) {
-    this._wayPoints = wayPoints;
+  render() {
+    const wayPoints = this._wayPointsModel.getWayPoints();
     const isAvailable = Object.keys(wayPoints).length === 0;
 
     if (isAvailable) {
       this._renderComponent.render(this._container, this._noPointsComponent);
     } else {
+      if (this._noPointsComponent) {
+        this._renderComponent.remove(this._noPointsComponent);
+      }
       const daysTrip = this._gettingDaysTrip(wayPoints);
       let indexDate = 1;
+
 
       this._renderComponent.render(this._container, this._sortComponent);
       this._renderComponent.render(this._container, this._tripDaysComponent);
@@ -38,40 +48,46 @@ export default class TripController {
 
       for (const day of daysTrip) {
         const pointInDay = wayPoints.filter((wayPoint) => wayPoint.date.startDate.getDate() === day);
-        const pointRender = pointInDay.slice().slice(0, MAX_RENDER_POINT);
-        const dayTripComponent = new DayTripComponent(indexDate, pointRender[0].date.startDate);
-        this._renderComponent.render(this._tripDaysComponent.getElement(), dayTripComponent);
-
+        const dateDayTrip = pointInDay[0].date.startDate;
+        const dayTripComponent = new DayTripComponent(indexDate, dateDayTrip);
         const tripEventsListElement = dayTripComponent.getElement().querySelector(`.trip-events__list`);
-        this._showedWayPointController = this._showedWayPointController.concat(this._renderWayPoints(tripEventsListElement, pointRender, this._onDataChange, this._onViewChange));
+
+        this._dayTripComponents.push(dayTripComponent);
+        this._renderComponent.render(this._tripDaysComponent.getElement(), dayTripComponent);
+        this._showedWayPointControllers = this._showedWayPointControllers.concat(this._renderWayPoints(tripEventsListElement, pointInDay, this._onDataChange, this._onViewChange));
 
         indexDate++;
       }
 
-      this._sortComponent.setSortTypeChangeHandler((sortType) => {
-        const sortedWayPoints = this._sortedWayPoints(wayPoints, sortType);
-        this._renderComponent.remove(this._tripDaysComponent);
-        if (sortType === `sort-event`) {
-          this.render(sortedWayPoints);
-        } else {
-          this._renderWayPointsAfterSorting(sortedWayPoints);
-        }
-      });
+      this._sortComponent.setSortTypeChangeHandler(this._onSortTypeChange);
     }
+  }
+
+  createWayPoint() {
+    if (this._creatingPoint) {
+      return;
+    }
+
+    const daysTripListElement = this._tripDaysComponent.getElement();
+    this._creatingWayPoint = new PointController(daysTripListElement, this._onDataChange, this._onViewChange);
+    this._creatingWayPoint.render(EmptyWayPoint, WayPointControllerMode.ADDING);
   }
 
   _renderWayPoints(tripEventsListElement, wayPoints, onDataChange, onViewChange) {
     return wayPoints.map((wayPoint) => {
-      const pointController = new PointController(tripEventsListElement, onDataChange, onViewChange);
-      pointController.render(wayPoint);
+      const tripEventsItemElement = document.createElement(`li`);
+      tripEventsItemElement.classList.add(`trip-events__item`);
+      tripEventsListElement.append(tripEventsItemElement);
+      const pointController = new PointController(tripEventsItemElement, onDataChange, onViewChange);
+      pointController.render(wayPoint, WayPointControllerMode.DEFAULT);
 
       return pointController;
     });
   }
 
   _renderWayPointsAfterSorting(wayPoints) {
-    const dayTripComponent = new DayTripComponent(false, false);
-    document.querySelector(`.trip-sort__item--day`).textContent = ``;
+    const dayTripComponent = new DayTripComponent();
+    this._dayTripComponents.push(dayTripComponent);
     this._renderComponent.render(this._container, this._tripDaysComponent);
     this._renderComponent.render(this._tripDaysComponent.getElement(), dayTripComponent);
 
@@ -90,7 +106,7 @@ export default class TripController {
     return Object.values(date).reduce((a, b) => a + b, 0);
   }
 
-  _sortedWayPoints(wayPoints, sortType) {
+  _getSortedWayPoints(wayPoints, sortType) {
     let sortedWayPoints = [];
 
     switch (sortType) {
@@ -108,20 +124,73 @@ export default class TripController {
     return sortedWayPoints;
   }
 
+  _removeWayPoints() {
+    this._showedWayPointControllers.forEach((WayPointController) => WayPointController.destroy());
+    this._showedWayPointControllers = [];
+  }
+
+  _removeDayComponents(dayComponents) {
+    dayComponents.forEach((dayComponent) => {
+      this._renderComponent.remove(dayComponent);
+    });
+  }
+
+  _resetSortType() {
+    this._sortComponent.resetSortType();
+  }
+
+  _updateWayPoints() {
+    this._removeDayComponents(this._dayTripComponents);
+    this._removeWayPoints();
+    this._resetSortType();
+    this.render();
+  }
+
+  _onSortTypeChange(sortType) {
+    const sortedWayPoints = this._getSortedWayPoints(this._wayPointsModel.getWayPoints(), sortType);
+    this._renderComponent.remove(this._tripDaysComponent);
+    if (sortType === `sort-event`) {
+      this.render();
+    } else {
+      this._renderWayPointsAfterSorting(sortedWayPoints);
+    }
+  }
+
   _onViewChange() {
-    this._showedWayPointController.forEach((it) => {
+    this._showedWayPointControllers.forEach((it) => {
       it.setDefaultView();
     });
   }
 
+  _onFilterChange() {
+    this._updateWayPoints();
+  }
+
   _onDataChange(controller, oldPointData, newPointData) {
-    const index = this._wayPoints.findIndex((it) => it === oldPointData);
+    if (oldPointData === EmptyWayPoint) {
+      this._creatingPoint = null;
 
-    if (index === -1) {
-      return;
+      if (newPointData === null) {
+        controller.destroy();
+        this._updateWayPoints();
+      } else {
+        this._wayPointsModel.addPoint(newPointData);
+        controller.render(newPointData, WayPointControllerMode.DEFAULT);
+
+        this._showedWayPointControllers = [].concat(controller, this._showedWayPointControllers);
+
+        this._updateWayPoints();
+      }
+    } else if (newPointData === null) {
+      this._wayPointsModel.removePoint(oldPointData.id);
+      this._updateWayPoints();
+    } else {
+      const isSuccess = this._wayPointsModel.updatePoint(oldPointData.id, newPointData);
+
+      if (isSuccess) {
+        // controller.render(newPointData, WayPointControllerMode.DEFAULT);
+        this._updateWayPoints();
+      }
     }
-
-    this._wayPoints[index] = newPointData;
-    controller.render(this._wayPoints[index]);
   }
 }
