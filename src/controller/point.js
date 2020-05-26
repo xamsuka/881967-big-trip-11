@@ -43,6 +43,7 @@ export default class PointController {
   }
 
   render(wayPoint, mode) {
+    debugger;
     const oldEditFormTripComponent = this._editFormTripComponent;
     const oldWayPointComponent = this._wayPointComponent;
 
@@ -80,8 +81,10 @@ export default class PointController {
           renderComponent.remove(oldEditFormTripComponent);
           renderComponent.remove(oldWayPointComponent);
         }
+
         this._onViewChange();
         this._creatingPoint = new AddNewEventComponent(wayPoint);
+
         const tripEventsElement = document.querySelector(`.trip-sort`);
 
         document.addEventListener(`keydown`, this._onButtonCancelClick);
@@ -95,6 +98,7 @@ export default class PointController {
 
         this._creatingPoint.setButtonCancelClick(() => {
           renderComponent.remove(this._creatingPoint);
+          this._onDataChange(this, EmptyWayPoint, null);
         });
 
         renderComponent.render(tripEventsElement, this._creatingPoint, InsertPlace.AFTER);
@@ -109,15 +113,20 @@ export default class PointController {
   }
 
   setDefaultView() {
+    this._closeFormNewEvent();
+
     if (this._mode !== Mode.DEFAULT) {
       this._replaceEditToWayPoint();
     }
+  }
 
-    this._closeFormNewEvent();
+  getModeTrip() {
+    return this._mode;
   }
 
   _replaceWayPointToEdit() {
     this._onViewChange();
+
     renderComponent.replace(this._editFormTripComponent, this._wayPointComponent);
     this._mode = Mode.EDIT;
   }
@@ -133,7 +142,6 @@ export default class PointController {
   }
 
   _closeFormNewEvent() {
-    debugger;
     if (this._mode === Mode.ADDING) {
       renderComponent.remove(this._creatingPoint);
       this._onDataChange(this, EmptyWayPoint, null);

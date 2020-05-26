@@ -9,11 +9,12 @@ import PointController, {Mode as WayPointControllerMode, EmptyWayPoint} from './
 const utilsComponent = new UtilsComponent();
 
 export default class TripController {
-  constructor(container, wayPointsModel) {
+  constructor(container, wayPointsModel, buttonAdd) {
     this._wayPointsModel = wayPointsModel;
     this._showedWayPointControllers = [];
     this._dayTripComponents = [];
     this._container = container;
+    this._buttonNewEvent = buttonAdd;
     this._noPointsComponent = new NoPointsComponent();
     this._sortComponent = new SortComponent();
     this._tripDaysComponent = new DaysTirpComponent();
@@ -69,8 +70,11 @@ export default class TripController {
     }
 
     const daysTripListElement = this._tripDaysComponent.getElement();
-    this._creatingWayPoint = new PointController(daysTripListElement, this._onDataChange, this._onViewChange);
-    this._creatingWayPoint.render(EmptyWayPoint, WayPointControllerMode.ADDING);
+
+    const pointController = new PointController(daysTripListElement, this._onDataChange, this._onViewChange);
+    pointController.render(EmptyWayPoint, WayPointControllerMode.ADDING);
+    this._showedWayPointControllers = this._showedWayPointControllers.concat(pointController);
+    console.log(this._showedWayPointControllers) ;
   }
 
   _renderWayPoints(tripEventsListElement, wayPoints, onDataChange, onViewChange) {
@@ -167,6 +171,12 @@ export default class TripController {
   }
 
   _onDataChange(controller, oldPointData, newPointData) {
+    const modeTrip = controller.getModeTrip();
+
+    if (modeTrip === WayPointControllerMode.ADDING) {
+      this._buttonNewEvent.updateStatusButton();
+    }
+
     if (oldPointData === EmptyWayPoint) {
       this._creatingPoint = null;
 
@@ -188,7 +198,6 @@ export default class TripController {
       const isSuccess = this._wayPointsModel.updatePoint(oldPointData.id, newPointData);
 
       if (isSuccess) {
-        // controller.render(newPointData, WayPointControllerMode.DEFAULT);
         this._updateWayPoints();
       }
     }

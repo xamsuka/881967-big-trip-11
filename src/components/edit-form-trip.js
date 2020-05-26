@@ -2,6 +2,7 @@ import AbstractSmartComponent from './abstract-smart-component';
 import flatpickr from "flatpickr";
 import {moment} from '../utils/util';
 import {Mode as WayPointControllerMode} from '../controller/point';
+import {wayPointOptions} from '../const';
 import "flatpickr/dist/flatpickr.min.css";
 
 const getStatusCheck = (option) => {
@@ -68,8 +69,8 @@ const createOptionsMarkup = (options) => {
 const createEditFormTripTemplate = (wayPoint, replaceableData = {}) => {
   const {destantion, date, price, options, isFavorite} = wayPoint;
   const {type} = replaceableData;
-  const timeStart = moment(date.startDate).format(`YYYY/DD/MM HH:MM`);
-  const timeEnd = moment(date.endDate).format(`YYYY/DD/MM HH:MM`);
+  const timeStart = moment(date.startDate).format(`YYYY/MM/DD HH:MM`);
+  const timeEnd = moment(date.endDate).format(`YYYY/MM/DD HH:MM`);
   const optionsMarkup = createOptionsMarkup(options);
   const statusFavoriteMarkup = isFavorite ? `checked` : ``;
 
@@ -225,7 +226,7 @@ export default class EditFormTrip extends AbstractSmartComponent {
 
   rerender() {
     super.rerender();
-    // this._eventType = this._wayPoint.type;
+
     this._applyFlatpickr();
   }
 
@@ -252,11 +253,18 @@ export default class EditFormTrip extends AbstractSmartComponent {
     this._subscribeOnEvents();
   }
 
-  getDataEditForm() {
-    const form = this.getElement();
-    const formData = new FormData(form);
+  _getOptions(formData) {
+    const optionInputElements = Array.from(document.querySelectorAll(`.event__offer-checkbox`));
+    const optionsName = optionInputElements.map((element) => element.name);
+    let options = Object.assign({}, wayPointOptions);
+    optionsName.forEach((option) => {
+      if (formData.get(option) !== `on`) {
+        const keyName = option.slice(12);
+        delete options[keyName];
+      }
+    });
 
-    return this._parseFormEditData(formData);
+    return options;
   }
 
   _parseFormEditData(formData) {
@@ -271,10 +279,17 @@ export default class EditFormTrip extends AbstractSmartComponent {
         endDate: new Date(formData.get(`event-end-time`)),
       },
       price: formData.get(`event-price`),
-      options: {},
+      options: this._getOptions(formData),
       info: {},
       isFavorite: dataFavorite,
     };
+  }
+
+  getDataEditForm() {
+    const form = this.getElement();
+    const formData = new FormData(form);
+
+    return this._parseFormEditData(formData);
   }
 
   _subscribeOnEvents() {

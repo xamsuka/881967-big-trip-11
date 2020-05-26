@@ -27,6 +27,7 @@ export default class Render {
   }
 
   replace(newComponent, oldComponent) {
+    debugger;
     const parentElement = oldComponent.getElement().parentElement;
     const newChild = newComponent.getElement();
     const oldChild = oldComponent.getElement();

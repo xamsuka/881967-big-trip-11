@@ -22,19 +22,20 @@ const tripEventsElement = pageMainElement.querySelector(`.trip-events`);
 
 
 pointsModel.setWayPoints(wayPoints);
-const tripControllerComponent = new TripControllerComponent(tripEventsElement, pointsModel);
+const buttonAdd = new ButtonAddComponent();
+const tripControllerComponent = new TripControllerComponent(tripEventsElement, pointsModel, buttonAdd);
 
 renderComponent.render(tripMainElement, new InfoTripComponent(), `afterbegin`);
 renderComponent.render(tripMainControlsElement, new MenuTripComponent());
 const filterController = new FilterController(tripMainControlsElement, pointsModel);
 filterController.render();
 
-const buttonAdd = new ButtonAddComponent();
+
 renderComponent.render(tripMainElement, buttonAdd);
 
 buttonAdd.setButtonAddClick(() => {
   tripControllerComponent.createWayPoint();
-  buttonAdd.disabledButton();
+  buttonAdd.updateStatusButton();
 });
 
 tripControllerComponent.render();

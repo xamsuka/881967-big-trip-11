@@ -13,13 +13,12 @@ export default class ButtonAdd extends AbstractComponent {
     this.getElement().addEventListener(`click`, handler);
   }
 
-  disabledButton() {
+  updateStatusButton() {
     const buttonElement = this.getElement();
-    if (buttonElement.hasAttribute(`disabled`)) {
-      buttonElement.removeAttribute(`disabled`);
+    if (buttonElement.disabled) {
+      buttonElement.disabled = false;
+    } else {
+      buttonElement.disabled = true;
     }
-    buttonElement.setAttribute(`disabled`, `disabled`);
   }
-
-
 }

@@ -1,5 +1,4 @@
-import AbstractSmartComponent from './abstract-smart-component';
-import flatpickr from "flatpickr";
+import EditFormTripComponent from './edit-form-trip';
 import {moment} from '../utils/util';
 import "flatpickr/dist/flatpickr.min.css";
 
@@ -210,29 +209,11 @@ const createAddNewEventFormTemplate = (wayPoint, replaceableData = {}) => {
         </form>`);
 };
 
-export default class AddNewEvent extends AbstractSmartComponent {
-  constructor(wayPoint) {
-    super();
-    this._wayPoint = wayPoint;
-    this._eventType = wayPoint.type;
-    this._setSubmitHandler = null;
-    this._setCancelHandler = null;
-    this._flatpickrStartDate = null;
-    this._flatpickrEdndDate = null;
-    this._applyFlatpickr();
-    this._subscribeOnEvents();
-  }
-
+export default class AddNewEvent extends EditFormTripComponent {
   getTemplate() {
     return createAddNewEventFormTemplate(this._wayPoint, {
       type: this._eventType,
     });
-  }
-
-  rerender() {
-    super.rerender();
-    // this._eventType = this._wayPoint.type;
-    this._applyFlatpickr();
   }
 
   setButtonSaveClick(handler) {
@@ -246,77 +227,5 @@ export default class AddNewEvent extends AbstractSmartComponent {
     .addEventListener(`click`, handler);
 
     this._setCancelHandler = handler;
-  }
-
-  setButtonFavoriteChange(handler) {
-    this.getElement().querySelector(`.event__favorite-icon`).addEventListener(`click`, handler);
-  }
-
-  recoveryListeners() {
-    this.setButtonSaveClick(this._setSubmitHandler);
-    this.setButtonCancelClick(this._setCancelHandler);
-    this._subscribeOnEvents();
-  }
-
-  getDataEditForm() {
-    const form = this.getElement();
-    const formData = new FormData(form);
-
-    return this._parseFormEditData(formData);
-  }
-
-  _parseFormEditData(formData) {
-    const dataFavorite = formData.get(`event-favorite`) === `on` ? true : false;
-
-    return {
-      id: 2,
-      type: this._eventType,
-      destantion: formData.get(`event-destination`),
-      date: {
-        startDate: new Date(formData.get(`event-start-time`)),
-        endDate: new Date(formData.get(`event-end-time`)),
-      },
-      price: formData.get(`event-price`),
-      options: {},
-      info: {},
-      isFavorite: dataFavorite,
-    };
-  }
-
-  _subscribeOnEvents() {
-    const element = this.getElement();
-
-    element.querySelector(`.event__type-list`)
-      .addEventListener(`click`, (evt) => {
-        const target = evt.target;
-        const input = target.htmlFor;
-        if (target.nodeName === `LABEL`) {
-          this._eventType = target.textContent;
-
-          this.rerender();
-
-          this.getElement().querySelector(`#${input}`).checked = true;
-        }
-      });
-  }
-
-  _applyFlatpickr() {
-    if (this._flatpickrStartDate || this._flatpickrEndDate) {
-      this._flatpickrStartDate.destroy();
-      this._flatpickrEndDate.destroy();
-      this._flatpickrStartDate = null;
-      this._flatpickrEndDate = null;
-    }
-    const eventStartDateElement = this.getElement().querySelector(`input[name="event-start-time"]`);
-    const eventEndDateElement = this.getElement().querySelector(`input[name="event-end-time"]`);
-
-    this._flatpickrStartDate = flatpickr(eventStartDateElement, {
-      enableTime: true,
-      dateFormat: `Y/m/d H:i`,
-    });
-    this._flatpickrEndDate = flatpickr(eventEndDateElement, {
-      enableTime: true,
-      dateFormat: `Y/m/d H:i`,
-    });
   }
 }
