@@ -1,7 +1,7 @@
 import AbstractSmartComponent from "./abstract-smart-component";
 import Chart from "chart.js";
 import ChartDataLabels from 'chartjs-plugin-datalabels';
-import {moment} from '../utils/util';
+import moment from 'moment';
 
 const gettingCoutTypeTrip = (typesWaypoint, wayPoints) => {
   return typesWaypoint.map((type) => {

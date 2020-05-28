@@ -1,6 +1,6 @@
 import AbstractSmartComponent from './abstract-smart-component';
 import flatpickr from "flatpickr";
-import {moment} from '../utils/util';
+import moment from 'moment';
 import {Mode as WayPointControllerMode} from '../controller/point';
 import {wayPointOptions} from '../const';
 import "flatpickr/dist/flatpickr.min.css";

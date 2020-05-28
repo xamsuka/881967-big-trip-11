@@ -1,5 +1,5 @@
 import AbstractComponent from './abstract-component';
-import {moment} from '../utils/util';
+import moment from 'moment';
 
 const createDaysTripTemplate = (dateIndex = ``, date = ``) => {
   const dayContainer = dateIndex ? `<span class="day__counter">${dateIndex}</span>` : ``;

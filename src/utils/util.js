@@ -1,5 +1,5 @@
-export const moment = require(`moment`);
-require(`moment-precise-range-plugin`);
+import moment from 'moment';
+import 'moment-precise-range-plugin';
 
 export default class Utils {
   constructor() {
