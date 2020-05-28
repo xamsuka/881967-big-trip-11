@@ -21,7 +21,7 @@ export default class Utils {
     return `${hourse}:${minutes}`;
   }
 
-  getdiffTime(date) {
+  getDiffTime(date) {
     const diffTime = moment.preciseDiff(date.startDate, date.endDate, true);
     return diffTime;
   }

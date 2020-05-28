@@ -52,7 +52,7 @@ const generateDate = () => {
   const startDate = new Date();
   const endDate = new Date();
   startDate.setDate(startDate.getDate() + utilsComponent.getRandomNumber(0, 2));
-  endDate.setHours(startDate.getHours() + utilsComponent.getRandomNumber(2, 12));
+  endDate.setHours(startDate.getHours() + utilsComponent.getRandomNumber(2, 4));
   endDate.setDate(startDate.getDate() + utilsComponent.getRandomNumber(0, 1));
 
   return {

@@ -2,6 +2,15 @@ import EditFormTripComponent from './edit-form-trip';
 import {moment} from '../utils/util';
 import "flatpickr/dist/flatpickr.min.css";
 
+const getDataList = (cityList) => {
+  const optionsDataList = cityList.map((city) => {
+    return (`<option value="${city}"></option>`);
+  });
+  return (`<datalist id="destination-list-1">
+             ${optionsDataList};
+            </datalist>`);
+};
+
 const getStatusCheck = (option) => {
   return option ? `checked` : ``;
 };
@@ -89,6 +98,7 @@ const createAddNewEventFormTemplate = (wayPoint, replaceableData = {}) => {
   const timeEnd = moment(date.endDate).format(`YYYY/DD/MM HH:MM`);
   const optionsMarkup = createOptionsMarkup(options);
   const infoMarkup = createDetailsMarkup(wayPoint);
+  const dataList = getDataList([`Omsk`, `Moscow`, `Tomsk`]);
 
   return (`<form class="trip-events__item  event  event--edit" action="#" method="post">
           <header class="event__header">
@@ -165,11 +175,7 @@ const createAddNewEventFormTemplate = (wayPoint, replaceableData = {}) => {
                 ${type} to
               </label>
               <input class="event__input  event__input--destination" id="event-destination-1" type="text" name="event-destination" value="${destantion}" list="destination-list-1">
-              <datalist id="destination-list-1">
-                <option value="Amsterdam"></option>
-                <option value="Geneva"></option>
-                <option value="Chamonix"></option>
-              </datalist>
+                ${dataList}
             </div>
 
             <div class="event__field-group  event__field-group--time">
@@ -189,7 +195,7 @@ const createAddNewEventFormTemplate = (wayPoint, replaceableData = {}) => {
                 <span class="visually-hidden">Price</span>
                 &euro;
               </label>
-              <input class="event__input  event__input--price" id="event-price-1" type="text" name="event-price" value="${price}">
+              <input class="event__input  event__input--price" id="event-price-1" type="number" name="event-price" value="${price}">
             </div>
 
             <button class="event__save-btn  btn  btn--blue" type="submit">Save</button>

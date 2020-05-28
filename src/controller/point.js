@@ -43,7 +43,6 @@ export default class PointController {
   }
 
   render(wayPoint, mode) {
-    debugger;
     const oldEditFormTripComponent = this._editFormTripComponent;
     const oldWayPointComponent = this._wayPointComponent;
 

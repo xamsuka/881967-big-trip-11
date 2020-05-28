@@ -1,8 +1,22 @@
 import AbstractComponent from "./abstract-component";
 
+const HIDE_CLASS = `visually-hidden`;
+
 export default class AbstractSmartComponent extends AbstractComponent {
   recoveryListeners() {
     throw new Error(`Abstract method not implemented: recoveryListeners`);
+  }
+
+  show() {
+    if (this._element) {
+      this._element.classList.remove(HIDE_CLASS);
+    }
+  }
+
+  hide() {
+    if (this._element) {
+      this._element.classList.add(HIDE_CLASS);
+    }
   }
 
   rerender() {

@@ -173,7 +173,7 @@ const createEditFormTripTemplate = (wayPoint, replaceableData = {}) => {
                 <span class="visually-hidden">Price</span>
                 &euro;
               </label>
-              <input class="event__input  event__input--price" id="event-price-1" type="text" name="event-price" value="${price}">
+              <input class="event__input  event__input--price" id="event-price-1" type="number" name="event-price" value="${price}">
             </div>
 
             <button class="event__save-btn  btn  btn--blue" type="submit">Save</button>
@@ -254,12 +254,13 @@ export default class EditFormTrip extends AbstractSmartComponent {
   }
 
   _getOptions(formData) {
+    const optionStartIndexSymbol = 12;
     const optionInputElements = Array.from(document.querySelectorAll(`.event__offer-checkbox`));
     const optionsName = optionInputElements.map((element) => element.name);
     let options = Object.assign({}, wayPointOptions);
     optionsName.forEach((option) => {
       if (formData.get(option) !== `on`) {
-        const keyName = option.slice(12);
+        const keyName = option.slice(optionStartIndexSymbol);
         delete options[keyName];
       }
     });

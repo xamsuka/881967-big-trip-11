@@ -42,6 +42,7 @@ export default class Sort extends AbstractComponent {
   constructor() {
     super();
     this._currentSortType = SortType.EVENT;
+    this._sortTypeHandler = null;
   }
   getTemplate() {
     return createSortTripTemplate();
@@ -50,6 +51,11 @@ export default class Sort extends AbstractComponent {
   resetSortType() {
     this._currentSortType = SortType.EVENT;
     this.getElement().reset();
+    this._sortTypeHandler(this._currentSortType);
+  }
+
+  getSortType() {
+    return this._currentSortType;
   }
 
   setSortTypeChangeHandler(handler) {
@@ -62,6 +68,7 @@ export default class Sort extends AbstractComponent {
         return;
       }
 
+      this._sortTypeHandler = handler;
       this._currentSortType = evt.target.dataset.sortType;
 
       handler(this._currentSortType);

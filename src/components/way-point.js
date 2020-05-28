@@ -23,7 +23,7 @@ const createWayPointTemplate = (wayPoint) => {
   const optionsMarkup = isExists ? createWayOptionsMarkup(options) : ``;
   const timeStart = utilsComponent.formateDateTime(date.startDate);
   const timeEnd = utilsComponent.formateDateTime(date.endDate);
-  const timeTrip = utilsComponent.getdiffTime(date);
+  const timeTrip = utilsComponent.getDiffTime(date);
 
   return (`<div class="event">
           <div class="event__type">
