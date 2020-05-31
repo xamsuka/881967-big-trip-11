@@ -1,78 +1,51 @@
 import AbstractSmartComponent from './abstract-smart-component';
 import flatpickr from "flatpickr";
 import moment from 'moment';
+import {DESTINATIONS} from '../main';
+import {OFFERS} from '../main';
 import {Mode as WayPointControllerMode} from '../controller/point';
-import {wayPointOptions} from '../const';
 import "flatpickr/dist/flatpickr.min.css";
 
-const getStatusCheck = (option) => {
-  return option ? `checked` : ``;
+const getDataLists = (destination) => {
+  const optionsDataList = DESTINATIONS.map((city) => {
+    const isSelected = destination.name === city.name ? `selected` : ``;
+    return (`<option ${isSelected} value="${city.name}">${city.name}</option>`);
+  }).join(``);
+
+  return optionsDataList;
 };
 
-const createOptionsMarkup = (options) => {
-  const statusCheckLaggage = getStatusCheck(options[`luggage`]);
-  const statusCheckComfort = getStatusCheck(options[`comfort`]);
-  const statusCheckMeal = getStatusCheck(options[`meal`]);
-  const statusCheckSeats = getStatusCheck(options[`seats`]);
-  const statusCheckisTrain = getStatusCheck(options[`train`]);
+const createOfferMarkup = (offersWayPoint, offer) => {
+  const isExist = offersWayPoint.find((offerPoint) => offerPoint.title === offer.title) ? true : false;
+  const isChecked = isExist ? `checked` : ``;
 
   return (`<div class="event__offer-selector">
   <input class="event__offer-checkbox  visually-hidden" id="event-offer-luggage-1" type="checkbox"
-    name="event-offer-luggage" ${statusCheckLaggage}>
+    name="event-offer-luggage" ${isChecked}>
   <label class="event__offer-label" for="event-offer-luggage-1">
-    <span class="event__offer-title">Add luggage</span>
+    <span class="event__offer-title">${offer.title}</span>
     &plus;
-    &euro;&nbsp;<span class="event__offer-price">30</span>
-  </label>
-</div>
-
-<div class="event__offer-selector">
-  <input class="event__offer-checkbox  visually-hidden" id="event-offer-comfort-1" type="checkbox"
-    name="event-offer-comfort" ${statusCheckComfort}>
-  <label class="event__offer-label" for="event-offer-comfort-1">
-    <span class="event__offer-title">Switch to comfort class</span>
-    &plus;
-    &euro;&nbsp;<span class="event__offer-price">100</span>
-  </label>
-</div>
-
-<div class="event__offer-selector">
-  <input class="event__offer-checkbox  visually-hidden" id="event-offer-meal-1" type="checkbox" name="event-offer-meal" ${statusCheckMeal}>
-  <label class="event__offer-label" for="event-offer-meal-1">
-    <span class="event__offer-title">Add meal</span>
-    &plus;
-    &euro;&nbsp;<span class="event__offer-price">15</span>
-  </label>
-</div>
-
-<div class="event__offer-selector">
-  <input class="event__offer-checkbox  visually-hidden" id="event-offer-seats-1" type="checkbox"
-    name="event-offer-seats" ${statusCheckSeats}>
-  <label class="event__offer-label" for="event-offer-seats-1">
-    <span class="event__offer-title">Choose seats</span>
-    &plus;
-    &euro;&nbsp;<span class="event__offer-price">5</span>
-  </label>
-</div>
-
-<div class="event__offer-selector">
-  <input class="event__offer-checkbox  visually-hidden" id="event-offer-train-1" type="checkbox"
-    name="event-offer-train" ${statusCheckisTrain}>
-  <label class="event__offer-label" for="event-offer-train-1">
-    <span class="event__offer-title">Travel by train</span>
-    &plus;
-    &euro;&nbsp;<span class="event__offer-price">40</span>
+    &euro;&nbsp;<span class="event__offer-price">${offer.price}</span>
   </label>
 </div>`);
 };
 
+const createOffersMarkup = (offersWayPoint, offers) => {
+
+  const offersMarkup = offers.map((offer) => {
+    return createOfferMarkup(offersWayPoint, offer);
+  });
+  return offersMarkup;
+};
+
 const createEditFormTripTemplate = (wayPoint, replaceableData = {}) => {
-  const {destantion, date, price, options, isFavorite} = wayPoint;
-  const {type} = replaceableData;
+  const {date, price, isFavorite} = wayPoint;
+  const {type, destination, offers} = replaceableData;
   const timeStart = moment(date.startDate).format(`YYYY/MM/DD HH:MM`);
   const timeEnd = moment(date.endDate).format(`YYYY/MM/DD HH:MM`);
-  const optionsMarkup = createOptionsMarkup(options);
+  const offersMarkup = createOffersMarkup(wayPoint.offers, offers);
   const statusFavoriteMarkup = isFavorite ? `checked` : ``;
+  const dataLists = getDataLists(destination);
 
   return (`<form class="event  event--edit" action="#" method="post">
           <header class="event__header">
@@ -148,12 +121,9 @@ const createEditFormTripTemplate = (wayPoint, replaceableData = {}) => {
               <label class="event__label  event__type-output" for="event-destination-1">
                 ${type} to
               </label>
-              <input class="event__input  event__input--destination" id="event-destination-1" type="text" name="event-destination" value="${destantion}" list="destination-list-1">
-              <datalist id="destination-list-1">
-                <option value="Amsterdam"></option>
-                <option value="Geneva"></option>
-                <option value="Chamonix"></option>
-              </datalist>
+              <select class="event__input  event__input--destination" id="event-destination-1" name="event-destination" value="${destination.name}">
+                ${dataLists}
+              </select>
             </div>
 
             <div class="event__field-group  event__field-group--time">
@@ -197,7 +167,7 @@ const createEditFormTripTemplate = (wayPoint, replaceableData = {}) => {
               <h3 class="event__section-title  event__section-title--offers">Offers</h3>
 
               <div class="event__available-offers">
-               ${optionsMarkup}
+               ${offersMarkup}
               </div>
             </section>
           </section>
@@ -210,6 +180,8 @@ export default class EditFormTrip extends AbstractSmartComponent {
     this._wayPoint = wayPoint;
     this._mode = WayPointControllerMode.EDIT;
     this._eventType = wayPoint.type;
+    this._destinationWayPoint = this._wayPoint.destination;
+    this._offersWayPoint = this._wayPoint.offers;
     this._setSubmitHandler = null;
     this._setDeleteHandler = null;
     this._flatpickrStartDate = null;
@@ -221,13 +193,26 @@ export default class EditFormTrip extends AbstractSmartComponent {
   getTemplate() {
     return createEditFormTripTemplate(this._wayPoint, {
       type: this._eventType,
-    }, this._mode);
+      destination: this._destinationWayPoint,
+      offers: this._offersWayPoint,
+    });
   }
 
   rerender() {
     super.rerender();
 
     this._applyFlatpickr();
+  }
+
+  reset() {
+    this.rerender();
+  }
+
+  setButtonCloseEditClick(handler) {
+    const editWayPointElement = this.getElement();
+    const buttonCloseEditElement = editWayPointElement.querySelector(`.event__rollup-btn`);
+
+    buttonCloseEditElement.addEventListener(`click`, handler);
   }
 
   setButtonSaveClick(handler) {
@@ -253,44 +238,24 @@ export default class EditFormTrip extends AbstractSmartComponent {
     this._subscribeOnEvents();
   }
 
-  _getOptions(formData) {
-    const optionStartIndexSymbol = 12;
-    const optionInputElements = Array.from(document.querySelectorAll(`.event__offer-checkbox`));
-    const optionsName = optionInputElements.map((element) => element.name);
-    let options = Object.assign({}, wayPointOptions);
-    optionsName.forEach((option) => {
-      if (formData.get(option) !== `on`) {
-        const keyName = option.slice(optionStartIndexSymbol);
-        delete options[keyName];
-      }
-    });
+  // _getOptions(formData) {
+  //   const optionStartIndexSymbol = 12;
+  //   const optionInputElements = Array.from(document.querySelectorAll(`.event__offer-checkbox`));
+  //   const optionsName = optionInputElements.map((element) => element.name);
+  //   let options = Object.assign({}, wayPointOptions);
+  //   optionsName.forEach((option) => {
+  //     if (formData.get(option) !== `on`) {
+  //       const keyName = option.slice(optionStartIndexSymbol);
+  //       delete options[keyName];
+  //     }
+  //   });
 
-    return options;
-  }
-
-  _parseFormEditData(formData) {
-    const dataFavorite = formData.get(`event-favorite`) === `on` ? true : false;
-
-    return {
-      id: 2,
-      type: this._eventType,
-      destantion: formData.get(`event-destination`),
-      date: {
-        startDate: new Date(formData.get(`event-start-time`)),
-        endDate: new Date(formData.get(`event-end-time`)),
-      },
-      price: formData.get(`event-price`),
-      options: this._getOptions(formData),
-      info: {},
-      isFavorite: dataFavorite,
-    };
-  }
+  //   return options;
+  // }
 
   getDataEditForm() {
     const form = this.getElement();
-    const formData = new FormData(form);
-
-    return this._parseFormEditData(formData);
+    return new FormData(form);
   }
 
   _subscribeOnEvents() {
@@ -302,11 +267,20 @@ export default class EditFormTrip extends AbstractSmartComponent {
         const input = target.htmlFor;
         if (target.nodeName === `LABEL`) {
           this._eventType = target.textContent;
+          this._offersWayPoint = OFFERS.find((offer) => offer.type === this._eventType.toLowerCase()).offers;
 
           this.rerender();
 
           this.getElement().querySelector(`#${input}`).checked = true;
         }
+      });
+
+    element.querySelector(`.event__input--destination`)
+      .addEventListener(`change`, (evt) => {
+        const indexDestination = evt.target.selectedIndex;
+        this._destinationWayPoint = DESTINATIONS[indexDestination];
+
+        this.rerender();
       });
   }
 

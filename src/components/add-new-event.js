@@ -1,83 +1,53 @@
 import EditFormTripComponent from './edit-form-trip';
 import moment from 'moment';
+import {DESTINATIONS} from '../main';
 import "flatpickr/dist/flatpickr.min.css";
 
-const getDataList = (cityList) => {
-  const optionsDataList = cityList.map((city) => {
-    return (`<option value="${city}"></option>`);
-  });
-  return (`<datalist id="destination-list-1">
-             ${optionsDataList};
-            </datalist>`);
+const getDataLists = (destination) => {
+  const optionsDataList = DESTINATIONS.map((city) => {
+    const isSelected = destination.name === city.name ? `selected` : ``;
+    return (`<option ${isSelected} value="${city.name}">${city.name}</option>`);
+  }).join(``);
+
+  return optionsDataList;
 };
 
-const getStatusCheck = (option) => {
-  return option ? `checked` : ``;
-};
-
-const createOptionsMarkup = (options) => {
-  const statusCheckLaggage = getStatusCheck(options[`luggage`]);
-  const statusCheckComfort = getStatusCheck(options[`comfort`]);
-  const statusCheckMeal = getStatusCheck(options[`meal`]);
-  const statusCheckSeats = getStatusCheck(options[`seats`]);
-  const statusCheckisTrain = getStatusCheck(options[`train`]);
+const createOfferMarkup = (offersWayPoint, offer) => {
+  const isExist = offersWayPoint.find((offerPoint) => offerPoint.title === offer.title) ? true : false;
+  const isChecked = isExist ? `checked` : ``;
 
   return (`<div class="event__offer-selector">
   <input class="event__offer-checkbox  visually-hidden" id="event-offer-luggage-1" type="checkbox"
-    name="event-offer-luggage" ${statusCheckLaggage}>
+    name="event-offer-luggage" ${isChecked}>
   <label class="event__offer-label" for="event-offer-luggage-1">
-    <span class="event__offer-title">Add luggage</span>
+    <span class="event__offer-title">${offer.title}</span>
     &plus;
-    &euro;&nbsp;<span class="event__offer-price">30</span>
-  </label>
-</div>
-
-<div class="event__offer-selector">
-  <input class="event__offer-checkbox  visually-hidden" id="event-offer-comfort-1" type="checkbox"
-    name="event-offer-comfort" ${statusCheckComfort}>
-  <label class="event__offer-label" for="event-offer-comfort-1">
-    <span class="event__offer-title">Switch to comfort class</span>
-    &plus;
-    &euro;&nbsp;<span class="event__offer-price">100</span>
-  </label>
-</div>
-
-<div class="event__offer-selector">
-  <input class="event__offer-checkbox  visually-hidden" id="event-offer-meal-1" type="checkbox" name="event-offer-meal" ${statusCheckMeal}>
-  <label class="event__offer-label" for="event-offer-meal-1">
-    <span class="event__offer-title">Add meal</span>
-    &plus;
-    &euro;&nbsp;<span class="event__offer-price">15</span>
-  </label>
-</div>
-
-<div class="event__offer-selector">
-  <input class="event__offer-checkbox  visually-hidden" id="event-offer-seats-1" type="checkbox"
-    name="event-offer-seats" ${statusCheckSeats}>
-  <label class="event__offer-label" for="event-offer-seats-1">
-    <span class="event__offer-title">Choose seats</span>
-    &plus;
-    &euro;&nbsp;<span class="event__offer-price">5</span>
-  </label>
-</div>
-
-<div class="event__offer-selector">
-  <input class="event__offer-checkbox  visually-hidden" id="event-offer-train-1" type="checkbox"
-    name="event-offer-train" ${statusCheckisTrain}>
-  <label class="event__offer-label" for="event-offer-train-1">
-    <span class="event__offer-title">Travel by train</span>
-    &plus;
-    &euro;&nbsp;<span class="event__offer-price">40</span>
+    &euro;&nbsp;<span class="event__offer-price">${offer.price}</span>
   </label>
 </div>`);
 };
 
-const createDetailsMarkup = (wayPoint) => {
-  if (wayPoint.info.photos && wayPoint.info.description) {
-    const photoElements = wayPoint.info.photos.map((photo) => (`<img class="event__photo" src="${photo}" alt="Event photo">`)).join(` `);
+const createOffersMarkup = (offersWayPoint, offers) => {
+  if (offers) {
+    const offersMarkup = offers.map((offer) => {
+      return createOfferMarkup(offersWayPoint, offer);
+    }).join(``);
+    return (`<section class="event__section  event__section--offers">
+      <h3 class="event__section-title  event__section-title--offers">Offers</h3>
+
+      <div class="event__available-offers">
+        ${offersMarkup};
+      </div>
+    </section>`);
+  } return ``;
+};
+
+const createDetailsMarkup = (destination) => {
+  if (destination.pictures && destination.name) {
+    const photoElements = destination.pictures.map((photo) => (`<img class="event__photo" src="${photo.src}" alt="Event photo">`)).join(` `);
     return (`<section class="event__section  event__section--destination">
     <h3 class="event__section-title  event__section-title--destination">Destination</h3>
-    <p class="event__destination-description">${wayPoint.info.description}</p>
+    <p class="event__destination-description">${destination.description}</p>
 
     <div class="event__photos-container">
       <div class="event__photos-tape">
@@ -85,20 +55,18 @@ const createDetailsMarkup = (wayPoint) => {
       </div>
     </div>
   </section>`);
-  } else {
-    return ``;
-  }
-
+  } return ``;
 };
 
 const createAddNewEventFormTemplate = (wayPoint, replaceableData = {}) => {
-  const {destantion, date, price, options} = wayPoint;
-  const {type} = replaceableData;
+  const {date, price} = wayPoint;
+  const {type, destination, offers} = replaceableData;
+  const destinationName = destination.name ? destination.name : ``;
   const timeStart = moment(date.startDate).format(`YYYY/DD/MM HH:MM`);
   const timeEnd = moment(date.endDate).format(`YYYY/DD/MM HH:MM`);
-  const optionsMarkup = createOptionsMarkup(options);
-  const infoMarkup = createDetailsMarkup(wayPoint);
-  const dataList = getDataList([`Omsk`, `Moscow`, `Tomsk`]);
+  const offersMarkup = createOffersMarkup(wayPoint.offers, offers);
+  const infoMarkup = createDetailsMarkup(destination);
+  const dataList = getDataLists(destination);
 
   return (`<form class="trip-events__item  event  event--edit" action="#" method="post">
           <header class="event__header">
@@ -174,8 +142,9 @@ const createAddNewEventFormTemplate = (wayPoint, replaceableData = {}) => {
               <label class="event__label  event__type-output" for="event-destination-1">
                 ${type} to
               </label>
-              <input class="event__input  event__input--destination" id="event-destination-1" type="text" name="event-destination" value="${destantion}" list="destination-list-1">
+              <select class="event__input  event__input--destination" id="event-destination-1" name="event-destination" value="${destinationName}">
                 ${dataList}
+              </select>
             </div>
 
             <div class="event__field-group  event__field-group--time">
@@ -203,13 +172,8 @@ const createAddNewEventFormTemplate = (wayPoint, replaceableData = {}) => {
           </header>
 
           <section class="event__details">
-            <section class="event__section  event__section--offers">
-              <h3 class="event__section-title  event__section-title--offers">Offers</h3>
+            ${offersMarkup}
 
-              <div class="event__available-offers">
-               ${optionsMarkup}
-              </div>
-            </section>
             ${infoMarkup}
           </section>
         </form>`);
@@ -219,6 +183,8 @@ export default class AddNewEvent extends EditFormTripComponent {
   getTemplate() {
     return createAddNewEventFormTemplate(this._wayPoint, {
       type: this._eventType,
+      destination: this._destinationWayPoint,
+      offers: this._offersWayPoint,
     });
   }
 

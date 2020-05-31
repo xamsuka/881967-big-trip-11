@@ -3,7 +3,10 @@ import EditFormTripComponent from '../components/edit-form-trip';
 import AddNewEventComponent from '../components/add-new-event';
 import UtilsComponent from '../utils/util';
 import RenderComponent from '../utils/render';
+import PointModel from '../models/point';
 import {InsertPlace} from '../const';
+// import {DESTINATIONS} from '../main';
+// import {OFFERS} from '../main';
 
 export const Mode = {
   ADDING: `adding`,
@@ -14,23 +17,45 @@ export const Mode = {
 export const EmptyWayPoint = {
   id: 2,
   type: `Flight`,
-  destantion: ``,
+  destination: {
+    name: ``,
+    description: ``,
+    pictures: [],
+  },
   date: {
     startDate: new Date(),
     endDate: new Date(),
   },
   price: ``,
-  options: {},
-  info: {},
+  offers: [{}],
   isFavorite: false,
+};
+
+const parseFormEditData = (formData) => {
+  const dataFavorite = formData.get(`event-favorite`) === `on` ? true : false;
+
+  return new PointModel({
+    "type": formData.get(`event__type-output`),
+    "destination": {
+      name: formData.get(`event-destination`),
+      description: ``,
+      pictures: [],
+    },
+    "date_from": new Date(formData.get(`event-start-time`)),
+    "date_to": new Date(formData.get(`event-end-time`)),
+    "base_price": formData.get(`event-price`),
+    "offers": {},
+    "is_favorite": dataFavorite
+  });
 };
 
 const utilsComponent = new UtilsComponent();
 const renderComponent = new RenderComponent();
 
 export default class PointController {
-  constructor(container, onDataChange, onViewChange) {
+  constructor(container, onDataChange, onViewChange, destinations) {
     this._container = container;
+    this._destinations = destinations;
     this._wayPointComponent = null;
     this._editFormTripComponent = null;
     this._mode = Mode.DEFAULT;
@@ -38,8 +63,7 @@ export default class PointController {
     this._onButtonCancelClick = this._onButtonCancelClick.bind(this);
     this._onDataChange = onDataChange;
     this._onViewChange = onViewChange;
-    this._creatingPoint = null;
-    this._buttonAddEvetComponent = null;
+    this._creatingWayPoint = null;
   }
 
   render(wayPoint, mode) {
@@ -47,26 +71,34 @@ export default class PointController {
     const oldWayPointComponent = this._wayPointComponent;
 
     this._mode = mode;
-    this._wayPointComponent = new WayPointComponent(wayPoint);
-    this._editFormTripComponent = new EditFormTripComponent(wayPoint);
-
-    this._wayPointComponent.setButtonEditClick(() => {
-      document.addEventListener(`keydown`, this._onButtonEditClick);
-      this._replaceWayPointToEdit();
-    });
-
-    this._editFormTripComponent.setButtonSaveClick((evt) => {
-      evt.preventDefault();
-      const data = this._editFormTripComponent.getDataEditForm();
-      this._onDataChange(this, wayPoint, data);
-    });
-
-    this._editFormTripComponent.setButtonDeleteClick(() => {
-      this._onDataChange(this, wayPoint, null);
-    });
 
     switch (mode) {
       case Mode.DEFAULT:
+        this._wayPointComponent = new WayPointComponent(wayPoint);
+        this._editFormTripComponent = new EditFormTripComponent(wayPoint, this._destinations);
+
+        this._wayPointComponent.setButtonEditClick(() => {
+          document.addEventListener(`keydown`, this._onButtonEditClick);
+          this._replaceWayPointToEdit();
+        });
+
+        this._editFormTripComponent.setButtonCloseEditClick(() => {
+          this._editFormTripComponent.rerender();
+          this._replaceEditToWayPoint();
+        });
+
+        this._editFormTripComponent.setButtonSaveClick((evt) => {
+          evt.preventDefault();
+          const formData = this._editFormTripComponent.getDataEditForm();
+          const data = parseFormEditData(formData);
+
+          this._onDataChange(this, wayPoint, data);
+        });
+
+        this._editFormTripComponent.setButtonDeleteClick(() => {
+          this._onDataChange(this, wayPoint, null);
+        });
+
         if (oldEditFormTripComponent && oldWayPointComponent) {
           renderComponent.replace(this._editFormTripComponent, oldEditFormTripComponent);
           this._replaceEditToWayPoint();
@@ -82,38 +114,40 @@ export default class PointController {
         }
 
         this._onViewChange();
-        this._creatingPoint = new AddNewEventComponent(wayPoint);
 
-        const tripEventsElement = document.querySelector(`.trip-sort`);
+        this._creatingWayPoint = new AddNewEventComponent(wayPoint, this._destinations);
 
+        document.removeEventListener(`keydown`, this._onButtonEditClick);
         document.addEventListener(`keydown`, this._onButtonCancelClick);
 
-        this._creatingPoint.setButtonSaveClick((evt) => {
+        this._creatingWayPoint.setButtonSaveClick((evt) => {
           evt.preventDefault();
-          const data = this._creatingPoint.getDataEditForm();
-          this._onDataChange(this, wayPoint, data);
-          renderComponent.remove(this._creatingPoint);
+          const data = this._creatingWayPoint.getDataEditForm();
+          this._onDataChange(this, null, data);
+          renderComponent.remove(this._creatingWayPoint);
         });
 
-        this._creatingPoint.setButtonCancelClick(() => {
-          renderComponent.remove(this._creatingPoint);
+        this._creatingWayPoint.setButtonCancelClick(() => {
+          renderComponent.remove(this._creatingWayPoint);
           this._onDataChange(this, EmptyWayPoint, null);
         });
 
-        renderComponent.render(tripEventsElement, this._creatingPoint, InsertPlace.AFTER);
+        renderComponent.render(this._container, this._creatingWayPoint, InsertPlace.BEFORE);
         break;
     }
   }
 
   destroy() {
+    if (this._creatingWayPoint) {
+      renderComponent.remove(this._creatingWayPoint);
+    }
+
     renderComponent.remove(this._wayPointComponent);
     renderComponent.remove(this._editFormTripComponent);
     document.removeEventListener(`keydown`, this._onButtonEditClick);
   }
 
   setDefaultView() {
-    this._closeFormNewEvent();
-
     if (this._mode !== Mode.DEFAULT) {
       this._replaceEditToWayPoint();
     }
@@ -142,7 +176,6 @@ export default class PointController {
 
   _closeFormNewEvent() {
     if (this._mode === Mode.ADDING) {
-      renderComponent.remove(this._creatingPoint);
       this._onDataChange(this, EmptyWayPoint, null);
     }
   }

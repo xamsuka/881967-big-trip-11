@@ -9,7 +9,8 @@ import PointController, {Mode as WayPointControllerMode, EmptyWayPoint} from './
 const utilsComponent = new UtilsComponent();
 
 export default class TripController {
-  constructor(container, wayPointsModel, buttonAdd) {
+  constructor(container, wayPointsModel, buttonAdd, api) {
+    this._api = api;
     this._wayPointsModel = wayPointsModel;
     this._showedWayPointControllers = [];
     this._dayTripComponents = [];
@@ -76,13 +77,14 @@ export default class TripController {
   }
 
   createWayPoint() {
-    if (this._creatingPoint) {
+    if (this._creatingWayPoint) {
       return;
     }
 
     const daysTripListElement = this._tripDaysComponent.getElement();
 
     const pointController = new PointController(daysTripListElement, this._onDataChange, this._onViewChange);
+    this._creatingWayPoint = pointController;
     pointController.render(EmptyWayPoint, WayPointControllerMode.ADDING);
     this._showedWayPointControllers = this._showedWayPointControllers.concat(pointController);
   }
@@ -92,6 +94,7 @@ export default class TripController {
       const tripEventsItemElement = document.createElement(`li`);
       tripEventsItemElement.classList.add(`trip-events__item`);
       tripEventsListElement.append(tripEventsItemElement);
+
       const pointController = new PointController(tripEventsItemElement, onDataChange, onViewChange);
       pointController.render(wayPoint, WayPointControllerMode.DEFAULT);
 
@@ -128,7 +131,8 @@ export default class TripController {
         sortedWayPoints = wayPoints;
         break;
       case SortType.TIME:
-        sortedWayPoints = wayPoints.slice().sort((a, b) => this._sumDate(utilsComponent.getdiffTime(b.date)) - this._sumDate(utilsComponent.getdiffTime(a.date)));
+        // getTime() переписать фильтр по времени. работает неправильно
+        sortedWayPoints = wayPoints.slice().sort((a, b) => this._sumDate(utilsComponent.getDiffTime(b.date)) - this._sumDate(utilsComponent.getDiffTime(a.date)));
         break;
       case SortType.PRICE:
         sortedWayPoints = wayPoints.slice().sort((a, b) => b.price - a.price);
@@ -184,35 +188,33 @@ export default class TripController {
   }
 
   _onDataChange(controller, oldPointData, newPointData) {
-    const modeTrip = controller.getModeTrip();
-
-    if (modeTrip === WayPointControllerMode.ADDING) {
-      this._buttonNewEvent.updateStatusButton();
-    }
-
     if (oldPointData === EmptyWayPoint) {
-      this._creatingPoint = null;
+      this._creatingWayPoint.destroy();
+      this._creatingWayPoint = null;
+      this._buttonNewEvent.updateStatusButton();
+      return;
+    } else if (newPointData !== null && oldPointData === null) {
+      this._wayPointsModel.addPoint(newPointData);
+      controller.render(newPointData, WayPointControllerMode.DEFAULT);
 
-      if (newPointData === null) {
-        controller.destroy();
-        this._updateWayPoints();
-      } else {
-        this._wayPointsModel.addPoint(newPointData);
-        controller.render(newPointData, WayPointControllerMode.DEFAULT);
-
-        this._showedWayPointControllers = [].concat(controller, this._showedWayPointControllers);
-
-        this._updateWayPoints();
-      }
+      this._showedWayPointControllers = [].concat(controller, this._showedWayPointControllers);
+      this._buttonNewEvent.updateStatusButton();
+      this._updateWayPoints();
     } else if (newPointData === null) {
       this._wayPointsModel.removePoint(oldPointData.id);
       this._updateWayPoints();
     } else {
-      const isSuccess = this._wayPointsModel.updatePoint(oldPointData.id, newPointData);
+      this._api.updateWayPoint(oldPointData.id, newPointData)
+      .then((PointModal) => {
+        console.log(PointModal);
+        const isSuccess = this._wayPointsModel.updatePoint(oldPointData.id, newPointData);
 
-      if (isSuccess) {
-        this._updateWayPoints();
-      }
+        if (isSuccess) {
+          this._updateWayPoints();
+        }
+      });
+
+
     }
   }
 }

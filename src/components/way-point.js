@@ -3,13 +3,14 @@ import UtilsComponent from '../utils/util';
 
 const MAX_VISIBLE_OPTIONS = 3;
 
-const createWayOptionsMarkup = (options) => {
-  const keys = Object.keys(options);
+const createWayOptionsMarkup = (offers) => {
+  const keys = Object.keys(offers);
+
   const optionsMarkup = keys.map((key, index) => {
     const isVisible = ++index > MAX_VISIBLE_OPTIONS ? `none` : ``;
     return (`<li class="event__offer" style="display: ${isVisible}">
-      <span class="event__offer-title">${options[key].name}</span>&plus;&euro;&nbsp;
-      <span class="event__offer-price">${options[key].price}</span>
+      <span class="event__offer-title">${offers[key].title}</span>&plus;&euro;&nbsp;
+      <span class="event__offer-price">${offers[key].price}</span>
     </li>`);
   }).join(` `);
 
@@ -17,10 +18,10 @@ const createWayOptionsMarkup = (options) => {
 };
 
 const createWayPointTemplate = (wayPoint) => {
-  const {type, destantion, date, price, options} = wayPoint;
+  const {type, destination, date, price, offers} = wayPoint;
   const utilsComponent = new UtilsComponent();
-  const isExists = !!options;
-  const optionsMarkup = isExists ? createWayOptionsMarkup(options) : ``;
+  const isExists = !!offers;
+  const optionsMarkup = isExists ? createWayOptionsMarkup(offers) : ``;
   const timeStart = utilsComponent.formateDateTime(date.startDate);
   const timeEnd = utilsComponent.formateDateTime(date.endDate);
   const timeTrip = utilsComponent.getDiffTime(date);
@@ -29,7 +30,7 @@ const createWayPointTemplate = (wayPoint) => {
           <div class="event__type">
             <img class="event__type-icon" width="42" height="42" src="img/icons/${type.toLowerCase()}.png" alt="Event type icon">
           </div>
-          <h3 class="event__title">${type} to ${destantion}</h3>
+          <h3 class="event__title">${type} to ${destination.name}</h3>
 
           <div class="event__schedule">
             <p class="event__time">
