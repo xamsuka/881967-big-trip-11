@@ -24,12 +24,14 @@ const gettingSummTypeTrip = (typesWaypoint, wayPoints) => {
 };
 
 const getDiffTimeHours = (wayPoints) => {
-  return wayPoints.map((wayPoint) => {
+  const timeHoursInType = wayPoints.map((wayPoint) => {
     const startDate = moment(wayPoint.date.startDate);
     const endDate = moment(wayPoint.date.endDate);
     const duration = moment.duration(endDate.diff(startDate));
     return duration.asHours();
   }).reduce((prev, curr) => prev + curr);
+
+  return Math.floor(timeHoursInType);
 };
 
 const gettingCoutTimeTypeTrip = (typesWaypoint, wayPoints) => {
@@ -181,6 +183,7 @@ const renderTransportChart = (wayPoints, transportCtx) => {
 const renderTimeSpentChart = (wayPoints, timeSpentCtx) => {
   const typeWaypoints = gettingUniqueTypeTrip(wayPoints);
   const countTimeTripType = gettingCoutTimeTypeTrip(typeWaypoints, wayPoints);
+  console.log(countTimeTripType);
   return new Chart(timeSpentCtx, {
     plugins: [ChartDataLabels],
     type: `horizontalBar`,

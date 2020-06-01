@@ -20,6 +20,7 @@ export default class Render {
       case InsertPlace.BEFORE:
         container.before(component.getElement());
         break;
+
       case InsertPlace.AFTER:
         container.after(component.getElement());
         break;

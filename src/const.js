@@ -6,6 +6,8 @@ export const FiltersType = {
 
 export const InsertPlace = {
   AFTERBEGIN: `afterbegin`,
+  AFTEREND: `afterend`,
+  BEFOREBEGIN: `beforebegin`,
   BEFOREEND: `beforeend`,
   BEFORE: `before`,
   AFTER: `after`,

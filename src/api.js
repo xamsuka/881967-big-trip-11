@@ -1,12 +1,4 @@
-import LoadingComponent from './components/loading';
-import RenderComponent from './utils/render';
 import PointModel from './models/point';
-
-const loadingComponent = new LoadingComponent();
-const renderComponent = new RenderComponent();
-
-const pageMainElement = document.querySelector(`.page-main`);
-const tripEventsElement = pageMainElement.querySelector(`.trip-events`);
 
 const Method = {
   GET: `GET`,
@@ -42,20 +34,11 @@ export default class API {
   }
 
   _load({url, method = Method.GET, body = null, headers = new Headers()}) {
-    headers.append(`Authorization`, this._authorization);
 
+    headers.append(`Authorization`, this._authorization);
     return fetch(`${this._urlApi}/${url}`, {method, body, headers})
-      .then((response) => {
-        renderComponent.render(tripEventsElement, loadingComponent);
-        return response;
-      })
       .then(checkStatus)
       .then((response) => response.json())
-
-      .then((response) => {
-        renderComponent.remove(loadingComponent);
-        return response;
-      })
       .catch(() => {
         return {};
       });
@@ -68,7 +51,23 @@ export default class API {
       body: JSON.stringify(data.toRAW()),
       headers: new Headers({"Content-Type": `application/json`})
     })
-
     .then(PointModel.parseWayPoint);
+  }
+
+  createWayPoint(wayPoint) {
+    return this._load({
+      url: `points`,
+      method: Method.POST,
+      body: JSON.stringify(wayPoint.toRAW()),
+      headers: new Headers({"Content-Type": `application/json`})
+    })
+    .then(PointModel.parseWayPoint);
+  }
+
+  deleteWayPoint(id) {
+    return this._load({
+      url: `points/${id}`,
+      method: Method.DELETE,
+    });
   }
 }

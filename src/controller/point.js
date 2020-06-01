@@ -6,7 +6,9 @@ import RenderComponent from '../utils/render';
 import PointModel from '../models/point';
 import {InsertPlace} from '../const';
 import {DESTINATIONS} from '../main';
-import {OFFERS} from '../main';
+
+const utilsComponent = new UtilsComponent();
+const renderComponent = new RenderComponent();
 
 export const Mode = {
   ADDING: `adding`,
@@ -47,12 +49,11 @@ const getOptions = () => {
   return offers;
 };
 
-const parseFormEditData = (formData, wayPoint) => {
+const parseFormEditData = (formData) => {
   const dataFavorite = formData.get(`event-favorite`) === `on` ? true : false;
-
+  const typeCurrent = document.querySelector(`input[name="event-type"]:checked`);
   return new PointModel({
-    "id": wayPoint.id,
-    "type": wayPoint.type,
+    "type": typeCurrent.value,
     "destination": {
       name: formData.get(`event-destination`),
       description: DESTINATIONS.find((destination) => destination.name === formData.get(`event-destination`)).description,
@@ -65,9 +66,6 @@ const parseFormEditData = (formData, wayPoint) => {
     "is_favorite": dataFavorite
   });
 };
-
-const utilsComponent = new UtilsComponent();
-const renderComponent = new RenderComponent();
 
 export default class PointController {
   constructor(container, onDataChange, onViewChange, destinations) {
@@ -105,8 +103,8 @@ export default class PointController {
     this._editFormTripComponent.setButtonSaveClick((evt) => {
       evt.preventDefault();
       const formData = this._editFormTripComponent.getDataEditForm();
-      const data = parseFormEditData(formData, this._wayPointComponent._wayPoint);
-      console.log(data);
+      const data = parseFormEditData(formData);
+
       this._onDataChange(this, wayPoint, data);
     });
 
@@ -139,7 +137,9 @@ export default class PointController {
 
         this._creatingWayPoint.setButtonSaveClick((evt) => {
           evt.preventDefault();
-          const data = this._creatingWayPoint.getDataEditForm();
+          const formData = this._creatingWayPoint.getDataEditForm();
+          const data = parseFormEditData(formData);
+
           this._onDataChange(this, null, data);
           renderComponent.remove(this._creatingWayPoint);
         });
@@ -149,13 +149,20 @@ export default class PointController {
           this._onDataChange(this, EmptyWayPoint, null);
         });
 
-        renderComponent.render(this._container, this._creatingWayPoint, InsertPlace.BEFORE);
+        const sortingElement = document.querySelector(`.trip-sort`);
+        const isExistSortElement = sortingElement ? true : false;
+
+        if (isExistSortElement) {
+          renderComponent.render(sortingElement, this._creatingWayPoint, InsertPlace.AFTER);
+        } else {
+          renderComponent.render(this._container, this._creatingWayPoint, InsertPlace.AFTER);
+        }
+
         break;
     }
   }
 
   destroy() {
-
     if (this._creatingWayPoint) {
       renderComponent.remove(this._creatingWayPoint);
     }

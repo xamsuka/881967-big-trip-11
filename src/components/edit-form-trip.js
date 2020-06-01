@@ -15,7 +15,7 @@ const getDataLists = (destination) => {
   return optionsDataList;
 };
 
-export const getOfferName = (offerName) => {
+const getOfferName = (offerName) => {
   return offerName.replace(/ /g, `-`);
 };
 
@@ -34,12 +34,22 @@ const createOfferMarkup = (offersWayPoint, offer) => {
 </div>`);
 };
 
-const createOffersMarkup = (offersWayPoint, offersInType) => {
+export const createOffersMarkup = (offersWayPoint, offersInType) => {
   if (offersInType) {
     const offersMarkup = offersInType.map((offer) => {
       return createOfferMarkup(offersWayPoint, offer);
     }).join(``);
-    return offersMarkup;
+
+    if (offersMarkup) {
+      return (`<section class="event__section  event__section--offers">
+      <h3 class="event__section-title  event__section-title--offers">Offers</h3>
+
+      <div class="event__available-offers">
+        ${offersMarkup}
+      </div>
+    </section>`);
+    }
+
   } return ``;
 };
 
@@ -124,7 +134,7 @@ const createEditFormTripTemplate = (wayPoint, replaceableData = {}) => {
 
             <div class="event__field-group  event__field-group--destination">
               <label class="event__label  event__type-output" for="event-destination-1">
-                ${type} to
+                ${type}
               </label>
               <select class="event__input  event__input--destination" id="event-destination-1" name="event-destination" value="${destination.name}">
                 ${dataLists}
@@ -168,13 +178,7 @@ const createEditFormTripTemplate = (wayPoint, replaceableData = {}) => {
           </header>
 
           <section class="event__details">
-            <section class="event__section  event__section--offers">
-              <h3 class="event__section-title  event__section-title--offers">Offers</h3>
-
-              <div class="event__available-offers">
-               ${offersMarkup}
-              </div>
-            </section>
+              ${offersMarkup}
           </section>
         </form>`);
 };

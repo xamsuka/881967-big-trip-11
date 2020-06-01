@@ -1,4 +1,4 @@
-import EditFormTripComponent from './edit-form-trip';
+import EditFormTripComponent, {createOffersMarkup} from './edit-form-trip';
 import moment from 'moment';
 import {DESTINATIONS} from '../main';
 import "flatpickr/dist/flatpickr.min.css";
@@ -10,36 +10,6 @@ const getDataLists = (destination) => {
   }).join(``);
 
   return optionsDataList;
-};
-
-const createOfferMarkup = (offersWayPoint, offer) => {
-  const isExist = offersWayPoint.find((offerPoint) => offerPoint.title === offer.title) ? true : false;
-  const isChecked = isExist ? `checked` : ``;
-
-  return (`<div class="event__offer-selector">
-  <input class="event__offer-checkbox  visually-hidden" id="event-offer-luggage-1" type="checkbox"
-    name="event-offer-luggage" ${isChecked}>
-  <label class="event__offer-label" for="event-offer-luggage-1">
-    <span class="event__offer-title">${offer.title}</span>
-    &plus;
-    &euro;&nbsp;<span class="event__offer-price">${offer.price}</span>
-  </label>
-</div>`);
-};
-
-const createOffersMarkup = (offersWayPoint, offers) => {
-  if (offers.length) {
-    const offersMarkup = offers.map((offer) => {
-      return createOfferMarkup(offersWayPoint, offer);
-    }).join(``);
-    return (`<section class="event__section  event__section--offers">
-      <h3 class="event__section-title  event__section-title--offers">Offers</h3>
-
-      <div class="event__available-offers">
-        ${offersMarkup};
-      </div>
-    </section>`);
-  } return ``;
 };
 
 const createDetailsMarkup = (destination) => {
@@ -112,7 +82,7 @@ const createAddNewEventFormTemplate = (wayPoint, replaceableData = {}) => {
                   </div>
 
                   <div class="event__type-item">
-                    <input id="event-type-flight-1" class="event__type-input  visually-hidden" type="radio" name="event-type" value="flight">
+                    <input id="event-type-flight-1" class="event__type-input  visually-hidden" type="radio" name="event-type" value="flight" checked>
                     <label class="event__type-label  event__type-label--flight" for="event-type-flight-1">Flight</label>
                   </div>
                 </fieldset>
@@ -140,7 +110,7 @@ const createAddNewEventFormTemplate = (wayPoint, replaceableData = {}) => {
 
             <div class="event__field-group  event__field-group--destination">
               <label class="event__label  event__type-output" for="event-destination-1">
-                ${type} to
+                ${type}
               </label>
               <select class="event__input  event__input--destination" id="event-destination-1" name="event-destination" value="${destinationName}">
                 ${dataList}

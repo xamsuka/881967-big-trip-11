@@ -5,6 +5,7 @@ import DayTripComponent from '../components/day-trip';
 import UtilsComponent from '../utils/util';
 import RenderComponent from '../utils/render';
 import PointController, {Mode as WayPointControllerMode, EmptyWayPoint} from './point';
+import moment from 'moment';
 
 const utilsComponent = new UtilsComponent();
 
@@ -54,7 +55,6 @@ export default class TripController {
       const daysTrip = this._gettingDaysTrip(wayPoints);
       let indexDate = 1;
 
-
       this._renderComponent.render(this._container, this._sortComponent);
       this._renderComponent.render(this._container, this._tripDaysComponent);
       document.querySelector(`.trip-sort__item--day`).textContent = `DAY`;
@@ -81,11 +81,12 @@ export default class TripController {
       return;
     }
 
-    const daysTripListElement = this._tripDaysComponent.getElement();
+    this._renderComponent.remove(this._noPointsComponent);
 
-    const pointController = new PointController(daysTripListElement, this._onDataChange, this._onViewChange);
+    const pointController = new PointController(this._container, this._onDataChange, this._onViewChange);
     this._creatingWayPoint = pointController;
     pointController.render(EmptyWayPoint, WayPointControllerMode.ADDING);
+
     this._showedWayPointControllers = this._showedWayPointControllers.concat(pointController);
   }
 
@@ -119,10 +120,6 @@ export default class TripController {
     return daysTrip.sort((a, b) => a - b);
   }
 
-  _sumDate(date) {
-    return Object.values(date).reduce((a, b) => a + b, 0);
-  }
-
   _getSortedWayPoints(wayPoints, sortType) {
     let sortedWayPoints = [];
 
@@ -132,7 +129,9 @@ export default class TripController {
         break;
       case SortType.TIME:
         // getTime() переписать фильтр по времени. работает неправильно
-        sortedWayPoints = wayPoints.slice().sort((a, b) => this._sumDate(utilsComponent.getDiffTime(b.date)) - this._sumDate(utilsComponent.getDiffTime(a.date)));
+        sortedWayPoints = wayPoints.slice().sort((a, b) => {
+          return moment.duration(moment(b.date.endDate).diff(moment(b.date.startDate))) - moment.duration(moment(a.date.endDate).diff(moment(a.date.startDate)));
+        });
         break;
       case SortType.PRICE:
         sortedWayPoints = wayPoints.slice().sort((a, b) => b.price - a.price);
@@ -194,15 +193,21 @@ export default class TripController {
       this._buttonNewEvent.updateStatusButton();
       return;
     } else if (newPointData !== null && oldPointData === null) {
-      this._wayPointsModel.addPoint(newPointData);
-      controller.render(newPointData, WayPointControllerMode.DEFAULT);
+      this._api.createWayPoint(newPointData)
+      .then((PointModal) => {
+        this._wayPointsModel.addPoint(PointModal);
+        controller.render(PointModal, WayPointControllerMode.DEFAULT);
 
-      this._showedWayPointControllers = [].concat(controller, this._showedWayPointControllers);
-      this._buttonNewEvent.updateStatusButton();
-      this._updateWayPoints();
+        this._showedWayPointControllers = [].concat(controller, this._showedWayPointControllers);
+        this._buttonNewEvent.updateStatusButton();
+        this._updateWayPoints();
+      });
     } else if (newPointData === null) {
-      this._wayPointsModel.removePoint(oldPointData.id);
-      this._updateWayPoints();
+      this._api.deleteWayPoint(oldPointData.id)
+        .then(() => {
+          this._wayPointsModel.removePoint(oldPointData.id);
+          this._updateWayPoints();
+        });
     } else {
       this._api.updateWayPoint(oldPointData.id, newPointData)
       .then((PointModal) => {

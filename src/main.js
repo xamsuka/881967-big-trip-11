@@ -4,6 +4,7 @@ import ButtonAddComponent from './components/button-add';
 import FilterController from './controller/filter';
 import StatisticsComponent from './components/statistics';
 import TripControllerComponent from './controller/trip';
+import LoadingComponent from './components/loading';
 import RenderComponent from './utils/render';
 import PointModel from './models/point';
 import PointsModel from './models/points';
@@ -11,11 +12,11 @@ import API from './api';
 
 const AUTHORIZATION = `Basic eo0w590ik29889a`;
 const URL = `https://11.ecmascript.pages.academy/big-trip`;
+const DESTINATIONS = [];
+const OFFERS = [];
 
 const api = new API(URL, AUTHORIZATION);
-
 const pointsModel = new PointsModel();
-
 
 const pageHeaderElement = document.querySelector(`.page-header`);
 const tripMainElement = pageHeaderElement.querySelector(`.trip-main`);
@@ -24,23 +25,22 @@ const pageMainElement = document.querySelector(`.page-main`);
 const tripEventsElement = pageMainElement.querySelector(`.trip-events`);
 
 const renderComponent = new RenderComponent();
-
 const buttonAdd = new ButtonAddComponent();
+const loadingComponent = new LoadingComponent();
 const menuTripComponent = new MenuTripComponent();
 let tripControllerComponent = null;
 const filterController = new FilterController(tripMainControlsElement, pointsModel);
 
 
 api.getWayPoints()
+  .then((response) => {
+    renderComponent.render(tripEventsElement, loadingComponent);
+    return response;
+  })
   .then(PointModel.parseWayPoints)
   .then((wayPoints) => {
-    console.log(wayPoints);
     pointsModel.setWayPoints(wayPoints);
-
   });
-
-const DESTINATIONS = [];
-const OFFERS = [];
 
 api.getDestinations()
   .then((destinations) => {
@@ -56,17 +56,14 @@ api.getDestinations()
       });
     })
     .then(() => {
-      tripControllerComponent = new TripControllerComponent(tripEventsElement, pointsModel, buttonAdd, api);
+      renderComponent.remove(loadingComponent);
       tripControllerComponent.render();
     });
   });
 
-  console.log(DESTINATIONS);
-  console.log(OFFERS);
-
-
 renderComponent.render(tripMainElement, new InfoTripComponent(), `afterbegin`);
 renderComponent.render(tripMainControlsElement, menuTripComponent);
+tripControllerComponent = new TripControllerComponent(tripEventsElement, pointsModel, buttonAdd, api);
 filterController.render();
 renderComponent.render(tripMainElement, buttonAdd);
 
@@ -76,7 +73,6 @@ buttonAdd.setButtonAddClick(() => {
   statisticsComponent.hide();
   tripControllerComponent.show();
 });
-
 
 const statisticsComponent = new StatisticsComponent(pointsModel);
 renderComponent.render(tripEventsElement, statisticsComponent, `after`);
