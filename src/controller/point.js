@@ -35,7 +35,7 @@ export const EmptyWayPoint = {
 const getOptions = () => {
   const offerInputElements = Array.from(document.querySelectorAll(`.event__offer-selector`));
 
-  let offers = [];
+  const offers = [];
   offerInputElements.forEach((offerSelectorElement) => {
     const isChecked = offerSelectorElement.querySelector(`.event__offer-checkbox`).checked;
     if (isChecked) {
