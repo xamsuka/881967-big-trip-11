@@ -206,8 +206,7 @@ export default class TripController {
     } else {
       this._api.updateWayPoint(oldPointData.id, newPointData)
       .then((PointModal) => {
-        console.log(PointModal);
-        const isSuccess = this._wayPointsModel.updatePoint(oldPointData.id, newPointData);
+        const isSuccess = this._wayPointsModel.updatePoint(oldPointData.id, PointModal);
 
         if (isSuccess) {
           this._updateWayPoints();

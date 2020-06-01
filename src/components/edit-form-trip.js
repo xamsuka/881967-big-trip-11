@@ -34,11 +34,13 @@ const createOfferMarkup = (offersWayPoint, offer) => {
 </div>`);
 };
 
-const createOffersMarkup = (offersWayPoint, offers) => {
-  const offersMarkup = offers.map((offer) => {
-    return createOfferMarkup(offersWayPoint, offer);
-  }).join(``);
-  return offersMarkup;
+const createOffersMarkup = (offersWayPoint, offersInType) => {
+  if (offersInType) {
+    const offersMarkup = offersInType.map((offer) => {
+      return createOfferMarkup(offersWayPoint, offer);
+    }).join(``);
+    return offersMarkup;
+  } return ``;
 };
 
 const createEditFormTripTemplate = (wayPoint, replaceableData = {}) => {
@@ -184,7 +186,7 @@ export default class EditFormTrip extends AbstractSmartComponent {
     this._mode = WayPointControllerMode.EDIT;
     this._eventType = wayPoint.type;
     this._destinationWayPoint = this._wayPoint.destination;
-    this._offersWayPoint = this._wayPoint.offers;
+    this._offersWayPoint = OFFERS.find((offer) => offer.type === this._eventType.toLowerCase()).offers;
     this._setSubmitHandler = null;
     this._setDeleteHandler = null;
     this._flatpickrStartDate = null;

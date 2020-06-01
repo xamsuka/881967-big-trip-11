@@ -1,6 +1,6 @@
 import EditFormTripComponent from './edit-form-trip';
 import moment from 'moment';
-import {DESTINATIONS, OFFERS} from '../main';
+import {DESTINATIONS} from '../main';
 import "flatpickr/dist/flatpickr.min.css";
 
 const getDataLists = (destination) => {
