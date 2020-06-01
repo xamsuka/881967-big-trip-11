@@ -1,6 +1,7 @@
 import EditFormTripComponent, {createOffersMarkup} from './edit-form-trip';
 import moment from 'moment';
 import {DESTINATIONS} from '../main';
+import {PLACES} from '../const';
 import "flatpickr/dist/flatpickr.min.css";
 
 const getDataLists = (destination) => {
@@ -13,7 +14,7 @@ const getDataLists = (destination) => {
 };
 
 const createDetailsMarkup = (destination) => {
-  if (destination.pictures && destination.name) {
+  if (destination.pictures && destination.description) {
     const photoElements = destination.pictures.map((photo) => (`<img class="event__photo" src="${photo.src}" alt="Event photo">`)).join(` `);
     return (`<section class="event__section  event__section--destination">
     <h3 class="event__section-title  event__section-title--destination">Destination</h3>
@@ -31,12 +32,13 @@ const createDetailsMarkup = (destination) => {
 const createAddNewEventFormTemplate = (wayPoint, replaceableData = {}) => {
   const {date, price} = wayPoint;
   const {type, destination, offers} = replaceableData;
-  const destinationName = destination.name ? destination.name : ``;
   const timeStart = moment(date.startDate).format(`YYYY/DD/MM HH:MM`);
   const timeEnd = moment(date.endDate).format(`YYYY/DD/MM HH:MM`);
   const offersMarkup = createOffersMarkup(wayPoint.offers, offers);
   const infoMarkup = createDetailsMarkup(destination);
   const dataList = getDataLists(destination);
+
+  const placeholder = PLACES.find((place) => place === type.toLowerCase()) ? `in` : `to`;
 
   return (`<form class="trip-events__item  event  event--edit" action="#" method="post">
           <header class="event__header">
@@ -110,9 +112,9 @@ const createAddNewEventFormTemplate = (wayPoint, replaceableData = {}) => {
 
             <div class="event__field-group  event__field-group--destination">
               <label class="event__label  event__type-output" for="event-destination-1">
-                ${type}
+                ${type} ${placeholder}
               </label>
-              <select class="event__input  event__input--destination" id="event-destination-1" name="event-destination" value="${destinationName}">
+              <select class="event__input  event__input--destination" id="event-destination-1" name="event-destination" >
                 ${dataList}
               </select>
             </div>

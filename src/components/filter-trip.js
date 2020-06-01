@@ -26,9 +26,20 @@ export default class Filter extends AbstractComponent {
   constructor() {
     super();
     this._currentFilterType = FiltersType.EVERYTHING;
+    this._filterTypeHandler = null;
   }
   getTemplate() {
     return createFilterTripTemplate();
+  }
+
+  resetFiltersType() {
+    this._currentFilterType = FiltersType.EVERYTHING;
+    this.getElement().reset();
+    this._filterTypeHandler(this._currentFilterType);
+  }
+
+  getFiltersType() {
+    return this._currentFilterType;
   }
 
   setFilterTypeChangeHandler(handler) {
@@ -42,6 +53,7 @@ export default class Filter extends AbstractComponent {
           return;
         }
 
+        this._filterTypeHandler = handler;
         this._currentFilterType = evt.target.textContent;
 
         handler(this._currentFilterType);

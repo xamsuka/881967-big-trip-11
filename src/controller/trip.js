@@ -2,12 +2,10 @@ import NoPointsComponent from '../components/no-points';
 import SortComponent, {SortType} from '../components/sort-trip';
 import DaysTirpComponent from '../components/trip-days';
 import DayTripComponent from '../components/day-trip';
-import UtilsComponent from '../utils/util';
 import RenderComponent from '../utils/render';
 import PointController, {Mode as WayPointControllerMode, EmptyWayPoint} from './point';
 import moment from 'moment';
-
-const utilsComponent = new UtilsComponent();
+import {InsertPlace} from '../const';
 
 export default class TripController {
   constructor(container, wayPointsModel, buttonAdd, api) {
@@ -55,7 +53,7 @@ export default class TripController {
       const daysTrip = this._gettingDaysTrip(wayPoints);
       let indexDate = 1;
 
-      this._renderComponent.render(this._container, this._sortComponent);
+      this._renderComponent.render(this._container, this._sortComponent, InsertPlace.AFTERBEGIN);
       this._renderComponent.render(this._container, this._tripDaysComponent);
       document.querySelector(`.trip-sort__item--day`).textContent = `DAY`;
 
@@ -128,7 +126,6 @@ export default class TripController {
         sortedWayPoints = wayPoints;
         break;
       case SortType.TIME:
-        // getTime() переписать фильтр по времени. работает неправильно
         sortedWayPoints = wayPoints.slice().sort((a, b) => {
           return moment.duration(moment(b.date.endDate).diff(moment(b.date.startDate))) - moment.duration(moment(a.date.endDate).diff(moment(a.date.startDate)));
         });

@@ -1,5 +1,6 @@
 import AbstractComponent from './abstract-component';
 import UtilsComponent from '../utils/util';
+import {PLACES} from '../const';
 
 const MAX_VISIBLE_OPTIONS = 3;
 
@@ -25,12 +26,13 @@ const createWayPointTemplate = (wayPoint) => {
   const timeStart = utilsComponent.formateDateTime(date.startDate);
   const timeEnd = utilsComponent.formateDateTime(date.endDate);
   const timeTrip = utilsComponent.getDiffTime(date);
+  const placeholder = PLACES.find((place) => place === type) ? `in` : `to`;
 
   return (`<div class="event">
           <div class="event__type">
             <img class="event__type-icon" width="42" height="42" src="img/icons/${type.toLowerCase()}.png" alt="Event type icon">
           </div>
-          <h3 class="event__title">${type} to ${destination.name}</h3>
+          <h3 class="event__title">${type} ${placeholder} ${destination.name}</h3>
 
           <div class="event__schedule">
             <p class="event__time">

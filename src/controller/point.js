@@ -90,6 +90,10 @@ export default class PointController {
     this._wayPointComponent = new WayPointComponent(wayPoint);
     this._editFormTripComponent = new EditFormTripComponent(wayPoint, this._destinations);
 
+    const editFormType = this._editFormTripComponent.getEventType().toLowerCase();
+    const evetTypeCurrentElement = this._editFormTripComponent.getElement().querySelector(`input[value="${editFormType}"]`);
+    evetTypeCurrentElement.checked = true;
+
     this._wayPointComponent.setButtonEditClick(() => {
       document.addEventListener(`keydown`, this._onButtonEditClick);
       this._replaceWayPointToEdit();
@@ -165,11 +169,10 @@ export default class PointController {
   destroy() {
     if (this._creatingWayPoint) {
       renderComponent.remove(this._creatingWayPoint);
+      document.removeEventListener(`keydown`, this._onButtonCancelClick);
     }
-
     renderComponent.remove(this._wayPointComponent);
     renderComponent.remove(this._editFormTripComponent);
-    document.removeEventListener(`keydown`, this._onButtonEditClick);
   }
 
   setDefaultView() {

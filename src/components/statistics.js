@@ -183,7 +183,7 @@ const renderTransportChart = (wayPoints, transportCtx) => {
 const renderTimeSpentChart = (wayPoints, timeSpentCtx) => {
   const typeWaypoints = gettingUniqueTypeTrip(wayPoints);
   const countTimeTripType = gettingCoutTimeTypeTrip(typeWaypoints, wayPoints);
-  console.log(countTimeTripType);
+
   return new Chart(timeSpentCtx, {
     plugins: [ChartDataLabels],
     type: `horizontalBar`,

@@ -3,6 +3,7 @@ import flatpickr from "flatpickr";
 import moment from 'moment';
 import {DESTINATIONS} from '../main';
 import {OFFERS} from '../main';
+import {PLACES} from '../const';
 import {Mode as WayPointControllerMode} from '../controller/point';
 import "flatpickr/dist/flatpickr.min.css";
 
@@ -53,6 +54,7 @@ export const createOffersMarkup = (offersWayPoint, offersInType) => {
   } return ``;
 };
 
+
 const createEditFormTripTemplate = (wayPoint, replaceableData = {}) => {
   const {date, price, isFavorite} = wayPoint;
   const {type, destination, offers} = replaceableData;
@@ -61,6 +63,7 @@ const createEditFormTripTemplate = (wayPoint, replaceableData = {}) => {
   const offersMarkup = createOffersMarkup(wayPoint.offers, offers);
   const statusFavoriteMarkup = isFavorite ? `checked` : ``;
   const dataLists = getDataLists(destination);
+  const placeholder = PLACES.find((place) => place === type) ? `in` : `to`;
 
   return (`<form class="event  event--edit" action="#" method="post">
           <header class="event__header">
@@ -134,7 +137,7 @@ const createEditFormTripTemplate = (wayPoint, replaceableData = {}) => {
 
             <div class="event__field-group  event__field-group--destination">
               <label class="event__label  event__type-output" for="event-destination-1">
-                ${type}
+                ${type} ${placeholder}
               </label>
               <select class="event__input  event__input--destination" id="event-destination-1" name="event-destination" value="${destination.name}">
                 ${dataLists}
@@ -158,7 +161,7 @@ const createEditFormTripTemplate = (wayPoint, replaceableData = {}) => {
                 <span class="visually-hidden">Price</span>
                 &euro;
               </label>
-              <input class="event__input  event__input--price" id="event-price-1" type="number" name="event-price" value="${price}">
+              <input class="event__input  event__input--price" id="event-price-1" type="number" name="event-price" value="${price}" require>
             </div>
 
             <button class="event__save-btn  btn  btn--blue" type="submit">Save</button>
@@ -194,7 +197,7 @@ export default class EditFormTrip extends AbstractSmartComponent {
     this._setSubmitHandler = null;
     this._setDeleteHandler = null;
     this._flatpickrStartDate = null;
-    this._flatpickrEdndDate = null;
+    this._flatpickrEndDate = null;
     this._applyFlatpickr();
     this._subscribeOnEvents();
   }
@@ -252,6 +255,10 @@ export default class EditFormTrip extends AbstractSmartComponent {
     return new FormData(form);
   }
 
+  getEventType() {
+    return this._eventType;
+  }
+
   _subscribeOnEvents() {
     const element = this.getElement();
 
@@ -276,6 +283,18 @@ export default class EditFormTrip extends AbstractSmartComponent {
 
         this.rerender();
       });
+
+    const eventStartDateElement = this.getElement().querySelector(`input[name="event-start-time"]`);
+    const eventEndDateElement = this.getElement().querySelector(`input[name="event-end-time"]`);
+    eventStartDateElement.addEventListener(`change`, (evt) => {
+      this._flatpickrEndDate = flatpickr(eventEndDateElement, {
+        enableTime: true,
+        dateFormat: `Y/m/d H:i`,
+        minDate: evt.target.value,
+      });
+
+      eventEndDateElement.value = evt.target.value;
+    });
   }
 
   _applyFlatpickr() {
@@ -288,6 +307,8 @@ export default class EditFormTrip extends AbstractSmartComponent {
     const eventStartDateElement = this.getElement().querySelector(`input[name="event-start-time"]`);
     const eventEndDateElement = this.getElement().querySelector(`input[name="event-end-time"]`);
 
+    const eventStartDateValue = eventStartDateElement.value;
+
     this._flatpickrStartDate = flatpickr(eventStartDateElement, {
       enableTime: true,
       dateFormat: `Y/m/d H:i`,
@@ -295,6 +316,7 @@ export default class EditFormTrip extends AbstractSmartComponent {
     this._flatpickrEndDate = flatpickr(eventEndDateElement, {
       enableTime: true,
       dateFormat: `Y/m/d H:i`,
+      minDate: eventStartDateValue,
     });
   }
 }

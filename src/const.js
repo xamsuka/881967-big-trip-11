@@ -12,3 +12,5 @@ export const InsertPlace = {
   BEFORE: `before`,
   AFTER: `after`,
 };
+
+export const PLACES = [`sightseeing`, `restaurant`, `check-in`];

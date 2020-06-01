@@ -1,4 +1,3 @@
-import InfoTripComponent from './components/price-trip';
 import MenuTripComponent, {MenuItem} from './components/menu-trip';
 import ButtonAddComponent from './components/button-add';
 import FilterController from './controller/filter';
@@ -61,7 +60,6 @@ api.getDestinations()
     });
   });
 
-renderComponent.render(tripMainElement, new InfoTripComponent(), `afterbegin`);
 renderComponent.render(tripMainControlsElement, menuTripComponent);
 tripControllerComponent = new TripControllerComponent(tripEventsElement, pointsModel, buttonAdd, api);
 filterController.render();
@@ -69,6 +67,7 @@ renderComponent.render(tripMainElement, buttonAdd);
 
 buttonAdd.setButtonAddClick(() => {
   buttonAdd.updateStatusButton();
+  filterController._resetFilterType();
   tripControllerComponent.createWayPoint();
   statisticsComponent.hide();
   tripControllerComponent.show();
