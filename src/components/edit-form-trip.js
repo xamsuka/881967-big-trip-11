@@ -15,14 +15,18 @@ const getDataLists = (destination) => {
   return optionsDataList;
 };
 
+export const getOfferName = (offerName) => {
+  return offerName.replace(/ /g, `-`);
+};
+
 const createOfferMarkup = (offersWayPoint, offer) => {
   const isExist = offersWayPoint.find((offerPoint) => offerPoint.title === offer.title) ? true : false;
   const isChecked = isExist ? `checked` : ``;
-
+  const offerName = getOfferName(offer.title.toLowerCase());
   return (`<div class="event__offer-selector">
-  <input class="event__offer-checkbox  visually-hidden" id="event-offer-luggage-1" type="checkbox"
-    name="event-offer-luggage" ${isChecked}>
-  <label class="event__offer-label" for="event-offer-luggage-1">
+  <input class="event__offer-checkbox  visually-hidden" id="event-offer-${offerName}-1" type="checkbox"
+    name="event-offer-${offerName}" ${isChecked}>
+  <label class="event__offer-label" for="event-offer-${offerName}-1">
     <span class="event__offer-title">${offer.title}</span>
     &plus;
     &euro;&nbsp;<span class="event__offer-price">${offer.price}</span>
@@ -31,10 +35,9 @@ const createOfferMarkup = (offersWayPoint, offer) => {
 };
 
 const createOffersMarkup = (offersWayPoint, offers) => {
-
   const offersMarkup = offers.map((offer) => {
     return createOfferMarkup(offersWayPoint, offer);
-  });
+  }).join(``);
   return offersMarkup;
 };
 
@@ -237,21 +240,6 @@ export default class EditFormTrip extends AbstractSmartComponent {
     this.setButtonDeleteClick(this._setDeleteHandler);
     this._subscribeOnEvents();
   }
-
-  // _getOptions(formData) {
-  //   const optionStartIndexSymbol = 12;
-  //   const optionInputElements = Array.from(document.querySelectorAll(`.event__offer-checkbox`));
-  //   const optionsName = optionInputElements.map((element) => element.name);
-  //   let options = Object.assign({}, wayPointOptions);
-  //   optionsName.forEach((option) => {
-  //     if (formData.get(option) !== `on`) {
-  //       const keyName = option.slice(optionStartIndexSymbol);
-  //       delete options[keyName];
-  //     }
-  //   });
-
-  //   return options;
-  // }
 
   getDataEditForm() {
     const form = this.getElement();

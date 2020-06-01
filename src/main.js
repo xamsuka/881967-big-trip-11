@@ -34,6 +34,7 @@ const filterController = new FilterController(tripMainControlsElement, pointsMod
 api.getWayPoints()
   .then(PointModel.parseWayPoints)
   .then((wayPoints) => {
+    console.log(wayPoints);
     pointsModel.setWayPoints(wayPoints);
 
   });

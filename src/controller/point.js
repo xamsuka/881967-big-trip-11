@@ -5,8 +5,8 @@ import UtilsComponent from '../utils/util';
 import RenderComponent from '../utils/render';
 import PointModel from '../models/point';
 import {InsertPlace} from '../const';
-// import {DESTINATIONS} from '../main';
-// import {OFFERS} from '../main';
+import {DESTINATIONS} from '../main';
+import {OFFERS} from '../main';
 
 export const Mode = {
   ADDING: `adding`,
@@ -15,7 +15,6 @@ export const Mode = {
 };
 
 export const EmptyWayPoint = {
-  id: 2,
   type: `Flight`,
   destination: {
     name: ``,
@@ -27,24 +26,42 @@ export const EmptyWayPoint = {
     endDate: new Date(),
   },
   price: ``,
-  offers: [{}],
+  offers: [],
   isFavorite: false,
 };
 
-const parseFormEditData = (formData) => {
+const getOptions = () => {
+  const offerInputElements = Array.from(document.querySelectorAll(`.event__offer-selector`));
+
+  let offers = [];
+  offerInputElements.forEach((offerSelectorElement) => {
+    const isChecked = offerSelectorElement.querySelector(`.event__offer-checkbox`).checked;
+    if (isChecked) {
+      offers.push({
+        title: offerSelectorElement.querySelector(`.event__offer-title`).textContent,
+        price: Number(offerSelectorElement.querySelector(`.event__offer-price`).textContent)
+      });
+    }
+  });
+
+  return offers;
+};
+
+const parseFormEditData = (formData, wayPoint) => {
   const dataFavorite = formData.get(`event-favorite`) === `on` ? true : false;
 
   return new PointModel({
-    "type": formData.get(`event__type-output`),
+    "id": wayPoint.id,
+    "type": wayPoint.type,
     "destination": {
       name: formData.get(`event-destination`),
-      description: ``,
-      pictures: [],
+      description: DESTINATIONS.find((destination) => destination.name === formData.get(`event-destination`)).description,
+      pictures: DESTINATIONS.find((destination) => destination.name === formData.get(`event-destination`)).pictures,
     },
     "date_from": new Date(formData.get(`event-start-time`)),
     "date_to": new Date(formData.get(`event-end-time`)),
-    "base_price": formData.get(`event-price`),
-    "offers": {},
+    "base_price": Number(formData.get(`event-price`)),
+    "offers": getOptions(),
     "is_favorite": dataFavorite
   });
 };
@@ -72,33 +89,33 @@ export default class PointController {
 
     this._mode = mode;
 
+    this._wayPointComponent = new WayPointComponent(wayPoint);
+    this._editFormTripComponent = new EditFormTripComponent(wayPoint, this._destinations);
+
+    this._wayPointComponent.setButtonEditClick(() => {
+      document.addEventListener(`keydown`, this._onButtonEditClick);
+      this._replaceWayPointToEdit();
+    });
+
+    this._editFormTripComponent.setButtonCloseEditClick(() => {
+      this._editFormTripComponent.rerender();
+      this._replaceEditToWayPoint();
+    });
+
+    this._editFormTripComponent.setButtonSaveClick((evt) => {
+      evt.preventDefault();
+      const formData = this._editFormTripComponent.getDataEditForm();
+      const data = parseFormEditData(formData, this._wayPointComponent._wayPoint);
+      console.log(data);
+      this._onDataChange(this, wayPoint, data);
+    });
+
+    this._editFormTripComponent.setButtonDeleteClick(() => {
+      this._onDataChange(this, wayPoint, null);
+    });
+
     switch (mode) {
       case Mode.DEFAULT:
-        this._wayPointComponent = new WayPointComponent(wayPoint);
-        this._editFormTripComponent = new EditFormTripComponent(wayPoint, this._destinations);
-
-        this._wayPointComponent.setButtonEditClick(() => {
-          document.addEventListener(`keydown`, this._onButtonEditClick);
-          this._replaceWayPointToEdit();
-        });
-
-        this._editFormTripComponent.setButtonCloseEditClick(() => {
-          this._editFormTripComponent.rerender();
-          this._replaceEditToWayPoint();
-        });
-
-        this._editFormTripComponent.setButtonSaveClick((evt) => {
-          evt.preventDefault();
-          const formData = this._editFormTripComponent.getDataEditForm();
-          const data = parseFormEditData(formData);
-
-          this._onDataChange(this, wayPoint, data);
-        });
-
-        this._editFormTripComponent.setButtonDeleteClick(() => {
-          this._onDataChange(this, wayPoint, null);
-        });
-
         if (oldEditFormTripComponent && oldWayPointComponent) {
           renderComponent.replace(this._editFormTripComponent, oldEditFormTripComponent);
           this._replaceEditToWayPoint();
@@ -138,6 +155,7 @@ export default class PointController {
   }
 
   destroy() {
+
     if (this._creatingWayPoint) {
       renderComponent.remove(this._creatingWayPoint);
     }

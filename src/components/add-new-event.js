@@ -1,6 +1,6 @@
 import EditFormTripComponent from './edit-form-trip';
 import moment from 'moment';
-import {DESTINATIONS} from '../main';
+import {DESTINATIONS, OFFERS} from '../main';
 import "flatpickr/dist/flatpickr.min.css";
 
 const getDataLists = (destination) => {
@@ -28,7 +28,7 @@ const createOfferMarkup = (offersWayPoint, offer) => {
 };
 
 const createOffersMarkup = (offersWayPoint, offers) => {
-  if (offers) {
+  if (offers.length) {
     const offersMarkup = offers.map((offer) => {
       return createOfferMarkup(offersWayPoint, offer);
     }).join(``);

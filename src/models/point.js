@@ -17,6 +17,19 @@ export default class Point {
 
   }
 
+  toRAW() {
+    return {
+      "id": this.id,
+      "type": this.type,
+      "destination": this.destination,
+      "date_from": this.date.startDate,
+      "date_to": this.date.endDate,
+      "base_price": this.price,
+      "offers": this.offers,
+      "is_favorite": this.isFavorite
+    };
+  }
+
   static parseWayPoint(data) {
     return new Point(data);
   }

@@ -51,6 +51,7 @@ export default class API {
       })
       .then(checkStatus)
       .then((response) => response.json())
+
       .then((response) => {
         renderComponent.remove(loadingComponent);
         return response;
@@ -64,9 +65,10 @@ export default class API {
     return this._load({
       url: `points/${id}`,
       method: Method.PUT,
-      body: JSON.stringify(data),
+      body: JSON.stringify(data.toRAW()),
       headers: new Headers({"Content-Type": `application/json`})
     })
+
     .then(PointModel.parseWayPoint);
   }
 }
