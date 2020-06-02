@@ -7,7 +7,6 @@ export default class FilterController {
     this._wayPointModel = wayPointModel;
     this._filterTripComponent = new FilterTripComponent();
     this._renderComponent = new RenderComponent();
-    this._activeFilter = null;
     this._onFilterChange = this._onFilterChange.bind(this);
   }
 
@@ -26,6 +25,5 @@ export default class FilterController {
 
   _onFilterChange(filterType) {
     this._wayPointModel.setActiveFilter(filterType);
-    this._activeFilter = filterType;
   }
 }

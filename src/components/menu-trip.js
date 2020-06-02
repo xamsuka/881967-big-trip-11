@@ -34,10 +34,17 @@ export default class MenuTrip extends AbstractSmartComponent {
     return createMenuTripTemplate(this._currentActiveMenu);
   }
 
+  resetMenuActive() {
+    if (this._currentActiveMenu !== MenuItem.TABLE) {
+      this._currentActiveMenu = MenuItem.TABLE;
+      this.rerender();
+      this._setOnChangeHandler(this._currentActiveMenu);
+    }
+  }
+
   setOnChange(handler) {
     this.getElement().addEventListener(`click`, (evt) => {
       evt.preventDefault();
-
 
       if (this._currentActiveMenu === evt.target.textContent) {
         return;

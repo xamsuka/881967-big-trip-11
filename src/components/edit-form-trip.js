@@ -279,6 +279,7 @@ export default class EditFormTrip extends AbstractSmartComponent {
     element.querySelector(`.event__input--destination`)
       .addEventListener(`change`, (evt) => {
         const indexDestination = evt.target.selectedIndex;
+
         this._destinationWayPoint = DESTINATIONS[indexDestination];
 
         this.rerender();

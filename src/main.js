@@ -67,6 +67,7 @@ renderComponent.render(tripMainElement, buttonAdd);
 
 buttonAdd.setButtonAddClick(() => {
   buttonAdd.updateStatusButton();
+  menuTripComponent.resetMenuActive();
   filterController._resetFilterType();
   tripControllerComponent.createWayPoint();
   statisticsComponent.hide();

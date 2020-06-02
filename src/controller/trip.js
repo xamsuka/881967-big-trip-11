@@ -83,6 +83,7 @@ export default class TripController {
 
     const pointController = new PointController(this._container, this._onDataChange, this._onViewChange);
     this._creatingWayPoint = pointController;
+
     pointController.render(EmptyWayPoint, WayPointControllerMode.ADDING);
 
     this._showedWayPointControllers = this._showedWayPointControllers.concat(pointController);
@@ -197,6 +198,7 @@ export default class TripController {
 
         this._showedWayPointControllers = [].concat(controller, this._showedWayPointControllers);
         this._buttonNewEvent.updateStatusButton();
+        this._creatingWayPoint = null;
         this._updateWayPoints();
       });
     } else if (newPointData === null) {

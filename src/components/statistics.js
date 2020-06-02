@@ -304,7 +304,6 @@ export default class Statistics extends AbstractSmartComponent {
     const transportCtx = element.querySelector(`.statistics__chart--transport`);
     const timeSpendCtx = element.querySelector(`.statistics__chart--time`);
 
-    // Рассчитаем высоту канваса в зависимости от того, сколько данных в него будет передаваться
     const BAR_HEIGHT = 55;
     moneyCtx.height = BAR_HEIGHT * 6;
     transportCtx.height = BAR_HEIGHT * 4;

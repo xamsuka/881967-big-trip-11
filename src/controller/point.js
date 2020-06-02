@@ -88,7 +88,7 @@ export default class PointController {
     this._mode = mode;
 
     this._wayPointComponent = new WayPointComponent(wayPoint);
-    this._editFormTripComponent = new EditFormTripComponent(wayPoint, this._destinations);
+    this._editFormTripComponent = new EditFormTripComponent(wayPoint);
 
     const editFormType = this._editFormTripComponent.getEventType().toLowerCase();
     const evetTypeCurrentElement = this._editFormTripComponent.getElement().querySelector(`input[value="${editFormType}"]`);
@@ -116,6 +116,13 @@ export default class PointController {
       this._onDataChange(this, wayPoint, null);
     });
 
+    this._editFormTripComponent.setButtonFavoriteChange(() => {
+      // const formData = this._editFormTripComponent.getDataEditForm();
+      // const data = parseFormEditData(formData);
+
+      // this._onDataChange(this, wayPoint, data);
+    });
+
     switch (mode) {
       case Mode.DEFAULT:
         if (oldEditFormTripComponent && oldWayPointComponent) {
@@ -134,7 +141,7 @@ export default class PointController {
 
         this._onViewChange();
 
-        this._creatingWayPoint = new AddNewEventComponent(wayPoint, this._destinations);
+        this._creatingWayPoint = new AddNewEventComponent(wayPoint);
 
         document.removeEventListener(`keydown`, this._onButtonEditClick);
         document.addEventListener(`keydown`, this._onButtonCancelClick);
@@ -171,6 +178,7 @@ export default class PointController {
       renderComponent.remove(this._creatingWayPoint);
       document.removeEventListener(`keydown`, this._onButtonCancelClick);
     }
+
     renderComponent.remove(this._wayPointComponent);
     renderComponent.remove(this._editFormTripComponent);
   }

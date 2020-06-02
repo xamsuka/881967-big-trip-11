@@ -152,6 +152,12 @@ const createAddNewEventFormTemplate = (wayPoint, replaceableData = {}) => {
 };
 
 export default class AddNewEvent extends EditFormTripComponent {
+  constructor(wayPoint) {
+    super(wayPoint);
+    this._setCancelHandler = null;
+    this._setSubmitHandler = null;
+  }
+
   getTemplate() {
     return createAddNewEventFormTemplate(this._wayPoint, {
       type: this._eventType,
@@ -171,5 +177,11 @@ export default class AddNewEvent extends EditFormTripComponent {
     .addEventListener(`click`, handler);
 
     this._setCancelHandler = handler;
+  }
+
+  recoveryListeners() {
+    this.setButtonSaveClick(this._setSubmitHandler);
+    this.setButtonCancelClick(this._setCancelHandler);
+    this._subscribeOnEvents();
   }
 }

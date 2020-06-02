@@ -2,19 +2,19 @@ import {FiltersType} from '../const';
 
 export default class Filters {
   getWayPointsByFilter(wayPoints, fiterType) {
-    let filterWayPoint = [];
+    let filterWayPoints = [];
     switch (fiterType.toLowerCase()) {
       case FiltersType.EVERYTHING:
-        filterWayPoint = wayPoints;
+        filterWayPoints = wayPoints;
         break;
       case FiltersType.FUTURE:
-        filterWayPoint = this._getWayPointFuture(wayPoints);
+        filterWayPoints = this._getWayPointFuture(wayPoints);
         break;
       case FiltersType.PAST:
-        filterWayPoint = this._getWayPointPast(wayPoints);
+        filterWayPoints = this._getWayPointPast(wayPoints);
     }
 
-    return filterWayPoint;
+    return filterWayPoints;
   }
 
   _getWayPointFuture(wayPoints) {
