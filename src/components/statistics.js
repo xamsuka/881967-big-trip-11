@@ -19,7 +19,7 @@ const gettingUniqueTypeTrip = (wayPoints) => {
 const gettingSummTypeTrip = (typesWaypoint, wayPoints) => {
   return typesWaypoint.map((type) => {
     const wayPointsFilterType = wayPoints.filter((wayPoint) => wayPoint.type.toUpperCase() === type);
-    return wayPointsFilterType.reduce((t, {price}) => t + price, 0);
+    return wayPointsFilterType.reduce((totalSumm, {price}) => totalSumm + price, 0);
   });
 };
 
@@ -29,7 +29,7 @@ const getDiffTimeHours = (wayPoints) => {
     const endDate = moment(wayPoint.date.endDate);
     const duration = moment.duration(endDate.diff(startDate));
     return duration.asHours();
-  }).reduce((prev, curr) => prev + curr);
+  }).reduce((previousWayPoint, currentWayPoint) => previousWayPoint + currentWayPoint);
 
   return Math.floor(timeHoursInType);
 };

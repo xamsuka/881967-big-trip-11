@@ -196,6 +196,7 @@ export default class EditFormTrip extends AbstractSmartComponent {
     this._offersWayPoint = OFFERS.find((offer) => offer.type === this._eventType.toLowerCase()).offers;
     this._setSubmitHandler = null;
     this._setDeleteHandler = null;
+    this._setButtonCloseEditClickHandler = null;
     this._flatpickrStartDate = null;
     this._flatpickrEndDate = null;
     this._applyFlatpickr();
@@ -225,6 +226,8 @@ export default class EditFormTrip extends AbstractSmartComponent {
     const buttonCloseEditElement = editWayPointElement.querySelector(`.event__rollup-btn`);
 
     buttonCloseEditElement.addEventListener(`click`, handler);
+
+    this._setButtonCloseEditClickHandler = handler;
   }
 
   setButtonSaveClick(handler) {
@@ -247,6 +250,7 @@ export default class EditFormTrip extends AbstractSmartComponent {
   recoveryListeners() {
     this.setButtonSaveClick(this._setSubmitHandler);
     this.setButtonDeleteClick(this._setDeleteHandler);
+    this.setButtonCloseEditClick(this._setButtonCloseEditClickHandler);
     this._subscribeOnEvents();
   }
 
