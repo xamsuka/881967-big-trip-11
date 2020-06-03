@@ -64,6 +64,8 @@ const createEditFormTripTemplate = (wayPoint, replaceableData = {}) => {
   const statusFavoriteMarkup = isFavorite ? `checked` : ``;
   const dataLists = getDataLists(destination);
   const placeholder = PLACES.find((place) => place === type) ? `in` : `to`;
+  const baseType = `flight`;
+  const isBaseType = type === baseType ? `checked` : ``;
 
   return (`<form class="event  event--edit" action="#" method="post">
           <header class="event__header">
@@ -109,7 +111,7 @@ const createEditFormTripTemplate = (wayPoint, replaceableData = {}) => {
                   </div>
 
                   <div class="event__type-item">
-                    <input id="event-type-flight-1" class="event__type-input  visually-hidden" type="radio" name="event-type" value="flight">
+                    <input id="event-type-flight-1" class="event__type-input  visually-hidden" type="radio" name="event-type" value="flight" ${isBaseType}>
                     <label class="event__type-label  event__type-label--flight" for="event-type-flight-1">Flight</label>
                   </div>
                 </fieldset>
@@ -191,11 +193,13 @@ export default class EditFormTrip extends AbstractSmartComponent {
     super();
     this._wayPoint = wayPoint;
     this._mode = WayPointControllerMode.EDIT;
+    this._statusForm = false;
     this._eventType = wayPoint.type;
     this._destinationWayPoint = this._wayPoint.destination;
     this._offersWayPoint = OFFERS.find((offer) => offer.type === this._eventType.toLowerCase()).offers;
     this._setSubmitHandler = null;
     this._setDeleteHandler = null;
+    this._setButtonFavoriteChangeHandler = null;
     this._setButtonCloseEditClickHandler = null;
     this._flatpickrStartDate = null;
     this._flatpickrEndDate = null;
@@ -245,12 +249,15 @@ export default class EditFormTrip extends AbstractSmartComponent {
 
   setButtonFavoriteChange(handler) {
     this.getElement().querySelector(`.event__favorite-icon`).addEventListener(`click`, handler);
+
+    this._setButtonFavoriteChangeHandler = handler;
   }
 
   recoveryListeners() {
     this.setButtonSaveClick(this._setSubmitHandler);
     this.setButtonDeleteClick(this._setDeleteHandler);
     this.setButtonCloseEditClick(this._setButtonCloseEditClickHandler);
+    this.setButtonFavoriteChange(this._setButtonFavoriteChangeHandler);
     this._subscribeOnEvents();
   }
 
@@ -264,20 +271,46 @@ export default class EditFormTrip extends AbstractSmartComponent {
   }
 
   setDisabledEditForm(buttonEventName) {
+
     const editForm = this.getElement();
-    const buttonSaveElement = editForm.querySelector(`.event__save-btn`);
-    const buttonDeleteElement = editForm.querySelector(`.event__reset-btn`);
-    editForm.querySelectorAll(`form input, form select, form textarea, form button`)
+    if (!this._statusForm) {
+      editForm.querySelectorAll(`form input, form select, form textarea, form button`)
       .forEach((elem) => {
         elem.disabled = true;
       });
 
-    if (buttonEventName === `Save`) {
-      buttonSaveElement.textContent = `Saving...`;
+      this._statusForm = true;
     } else {
-      buttonDeleteElement.textContent = `Deletion...`;
+      editForm.querySelectorAll(`form input, form select, form textarea, form button`)
+      .forEach((elem) => {
+        elem.disabled = false;
+      });
+
+      this._statusForm = false;
     }
 
+    const buttonSaveElement = editForm.querySelector(`.event__save-btn`);
+    const buttonDeleteElement = editForm.querySelector(`.event__reset-btn`);
+
+    if (buttonEventName) {
+      switch (buttonEventName) {
+        case `Save`:
+          buttonSaveElement.textContent = `Saving...`;
+          break;
+
+        case `Saving...`:
+          buttonSaveElement.textContent = `Save`;
+          break;
+
+        case `Delete`:
+          buttonDeleteElement.textContent = `Deleting...`;
+          break;
+
+        case `Deleting...`:
+          buttonDeleteElement.textContent = `Delete`;
+          break;
+      }
+    }
   }
 
   _subscribeOnEvents() {
@@ -299,6 +332,7 @@ export default class EditFormTrip extends AbstractSmartComponent {
 
     element.querySelector(`.event__input--destination`)
       .addEventListener(`change`, (evt) => {
+
         const indexDestination = evt.target.selectedIndex;
 
         this._destinationWayPoint = DESTINATIONS[indexDestination];

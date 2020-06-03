@@ -66,12 +66,12 @@ filterController.render();
 renderComponent.render(tripMainElement, buttonAdd);
 
 buttonAdd.setButtonAddClick(() => {
+  tripControllerComponent.show();
   buttonAdd.updateStatusButton();
   menuTripComponent.resetMenuActive();
   filterController._resetFilterType();
   tripControllerComponent.createWayPoint();
   statisticsComponent.hide();
-  tripControllerComponent.show();
 });
 
 const statisticsComponent = new StatisticsComponent(pointsModel);

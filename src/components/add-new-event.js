@@ -13,12 +13,13 @@ const getDataLists = (destination) => {
   return optionsDataList;
 };
 
-const createDetailsMarkup = (destination) => {
-  if (destination.pictures && destination.description) {
-    const photoElements = destination.pictures.map((photo) => (`<img class="event__photo" src="${photo.src}" alt="Event photo">`)).join(` `);
+const createDetailsMarkup = (destinationWayPoint) => {
+  const destinationOnServer = DESTINATIONS.find((destination) => destination.name === destinationWayPoint.name);
+  if (destinationOnServer.pictures && destinationOnServer.description) {
+    const photoElements = destinationOnServer.pictures.map((photo) => (`<img class="event__photo" src="${photo.src}" alt="Event photo">`)).join(` `);
     return (`<section class="event__section  event__section--destination">
     <h3 class="event__section-title  event__section-title--destination">Destination</h3>
-    <p class="event__destination-description">${destination.description}</p>
+    <p class="event__destination-description">${destinationOnServer.description}</p>
 
     <div class="event__photos-container">
       <div class="event__photos-tape">

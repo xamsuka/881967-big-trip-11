@@ -26,6 +26,9 @@ const createWayPointTemplate = (wayPoint) => {
   const timeStart = utilsComponent.formateDateTime(date.startDate);
   const timeEnd = utilsComponent.formateDateTime(date.endDate);
   const timeTrip = utilsComponent.getDiffTime(date);
+  const timeTripDays = timeTrip.days ? `${timeTrip.days}D` : ``;
+  const timeTripHours = timeTrip.hours ? `${timeTrip.hours}H` : ``;
+  const timeTripMinutes = timeTrip.minutes ? `${timeTrip.minutes}M` : ``;
   const placeholder = PLACES.find((place) => place === type) ? `in` : `to`;
 
   return (`<div class="event">
@@ -40,7 +43,7 @@ const createWayPointTemplate = (wayPoint) => {
               &mdash;
               <time class="event__end-time" datetime="2019-03-18T11:00">${timeEnd}</time>
             </p>
-            <p class="event__duration">${timeTrip.days}D ${timeTrip.hours}H ${timeTrip.minutes}M</p>
+            <p class="event__duration">${timeTripDays} ${timeTripHours} ${timeTripMinutes}</p>
           </div>
 
           <p class="event__price">

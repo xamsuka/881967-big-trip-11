@@ -75,6 +75,7 @@ export default class TripController {
   }
 
   createWayPoint() {
+
     if (this._creatingWayPoint) {
       return;
     }
@@ -165,6 +166,12 @@ export default class TripController {
   }
 
   _onSortTypeChange(sortType) {
+    if (this._creatingWayPoint) {
+      this._creatingWayPoint.destroy();
+      this._creatingWayPoint = null;
+      this._buttonNewEvent.updateStatusButton();
+    }
+
     const sortedWayPoints = this._getSortedWayPoints(this._wayPointsModel.getWayPoints(), sortType);
     this._renderComponent.remove(this._tripDaysComponent);
     if (sortType === `sort-event`) {
@@ -200,12 +207,20 @@ export default class TripController {
         this._buttonNewEvent.updateStatusButton();
         this._creatingWayPoint = null;
         this._updateWayPoints();
+      })
+      .catch(() => {
+        controller.shake();
+        controller._editFormTripComponent.setDisabledEditForm(`Saving...`);
       });
     } else if (newPointData === null) {
       return this._api.deleteWayPoint(oldPointData.id)
         .then(() => {
           this._wayPointsModel.removePoint(oldPointData.id);
           this._updateWayPoints();
+        })
+        .catch(() => {
+          controller.shake();
+          controller._editFormTripComponent.setDisabledEditForm(`Deleting...`);
         });
     } else {
       return this._api.updateWayPoint(oldPointData.id, newPointData)
@@ -215,9 +230,11 @@ export default class TripController {
         if (isSuccess) {
           this._updateWayPoints();
         }
+      })
+      .catch(() => {
+        controller.shake();
+        controller._editFormTripComponent.setDisabledEditForm(`Saving...`);
       });
-
-
     }
   }
 }

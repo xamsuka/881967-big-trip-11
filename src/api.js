@@ -30,7 +30,7 @@ export default class API {
   }
 
   getOffers() {
-    return this._load({url: `offers `});
+    return this._load({url: `offers`});
   }
 
   _load({url, method = Method.GET, body = null, headers = new Headers()}) {
