@@ -189,9 +189,9 @@ export default class TripController {
       this._creatingWayPoint.destroy();
       this._creatingWayPoint = null;
       this._buttonNewEvent.updateStatusButton();
-      return;
+      return Promise.resolve();
     } else if (newPointData !== null && oldPointData === null) {
-      this._api.createWayPoint(newPointData)
+      return this._api.createWayPoint(newPointData)
       .then((PointModal) => {
         this._wayPointsModel.addPoint(PointModal);
         controller.render(PointModal, WayPointControllerMode.DEFAULT);
@@ -202,13 +202,13 @@ export default class TripController {
         this._updateWayPoints();
       });
     } else if (newPointData === null) {
-      this._api.deleteWayPoint(oldPointData.id)
+      return this._api.deleteWayPoint(oldPointData.id)
         .then(() => {
           this._wayPointsModel.removePoint(oldPointData.id);
           this._updateWayPoints();
         });
     } else {
-      this._api.updateWayPoint(oldPointData.id, newPointData)
+      return this._api.updateWayPoint(oldPointData.id, newPointData)
       .then((PointModal) => {
         const isSuccess = this._wayPointsModel.updatePoint(oldPointData.id, PointModal);
 

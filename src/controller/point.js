@@ -108,11 +108,13 @@ export default class PointController {
       evt.preventDefault();
       const formData = this._editFormTripComponent.getDataEditForm();
       const data = parseFormEditData(formData);
-
+      this._editFormTripComponent.setDisabledEditForm(evt.submitter.textContent);
       this._onDataChange(this, wayPoint, data);
+
     });
 
-    this._editFormTripComponent.setButtonDeleteClick(() => {
+    this._editFormTripComponent.setButtonDeleteClick((evt) => {
+      this._editFormTripComponent.setDisabledEditForm(evt.target.textContent);
       this._onDataChange(this, wayPoint, null);
     });
 

@@ -263,6 +263,23 @@ export default class EditFormTrip extends AbstractSmartComponent {
     return this._eventType;
   }
 
+  setDisabledEditForm(buttonEventName) {
+    const editForm = this.getElement();
+    const buttonSaveElement = editForm.querySelector(`.event__save-btn`);
+    const buttonDeleteElement = editForm.querySelector(`.event__reset-btn`);
+    editForm.querySelectorAll(`form input, form select, form textarea, form button`)
+      .forEach((elem) => {
+        elem.disabled = true;
+      });
+
+    if (buttonEventName === `Save`) {
+      buttonSaveElement.textContent = `Saving...`;
+    } else {
+      buttonDeleteElement.textContent = `Deletion...`;
+    }
+
+  }
+
   _subscribeOnEvents() {
     const element = this.getElement();
 

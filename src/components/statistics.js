@@ -273,10 +273,6 @@ export default class Statistics extends AbstractSmartComponent {
     super();
     this._wayPoints = wayPoints;
 
-    this._moneyChart = null;
-    this._transportChart = null;
-    this._timeSpentChart = null;
-
     this._renderCharts();
   }
 
@@ -309,8 +305,8 @@ export default class Statistics extends AbstractSmartComponent {
     transportCtx.height = BAR_HEIGHT * 4;
     timeSpendCtx.height = BAR_HEIGHT * 4;
 
-    this._moneyChart = renderMoneyChart(this._wayPoints.getWayPoints(), moneyCtx);
-    this._transportChart = renderTransportChart(this._wayPoints.getWayPoints(), transportCtx);
-    this._timeSpentChart = renderTimeSpentChart(this._wayPoints.getWayPoints(), timeSpendCtx);
+    renderMoneyChart(this._wayPoints.getWayPoints(), moneyCtx);
+    renderTransportChart(this._wayPoints.getWayPoints(), transportCtx);
+    renderTimeSpentChart(this._wayPoints.getWayPoints(), timeSpendCtx);
   }
 }
