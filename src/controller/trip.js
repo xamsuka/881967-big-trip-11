@@ -189,6 +189,12 @@ export default class TripController {
 
   _onFilterChange() {
     this._updateWayPoints();
+
+    if (this._creatingWayPoint) {
+      this._creatingWayPoint.destroy();
+      this._creatingWayPoint = null;
+      this._buttonNewEvent.updateStatusButton();
+    }
   }
 
   _onDataChange(controller, oldPointData, newPointData) {
